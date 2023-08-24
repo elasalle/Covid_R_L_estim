@@ -1,7 +1,7 @@
-# CPCovidOutlier
+# CPCovid-Synth
 
 
-**CPCovidOutlier** is a web repository for variational approach to estimate the reproduction number R(t) of an epidemic.
+**CPCovid-Synth** is a web repository for variational approach to estimate the reproduction number R(t) of an epidemic.
 Particularly applied on Covid-19 pandemic case.
 - ---
 
