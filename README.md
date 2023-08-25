@@ -1,8 +1,8 @@
-# CPCovid-Synth
+# Covid-R-estim
 
 
-**CPCovid-Synth** is a web repository for variational approach to estimate the reproduction number R(t) of an epidemic.
-Particularly applied on Covid-19 pandemic case.
+**Covid-R-estim** is a web repository that gives tools for instaneous reproduction number R(t) estimation, applied to Covid-19.
+Synthetic data generation and more tools for estimators quantitative comparison are available.
 - ---
 
 **Author**: [Juliana Du](<https://juliana-du.github.io/>)
