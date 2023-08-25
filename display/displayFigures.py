@@ -20,7 +20,7 @@ def display_data(dates, data, title, savefig=False, savePath=None):
     plt.ticklabel_format(axis="both", style="sci", scilimits=(0, 0))
 
     ax.plot(formattedDates, data, label="$\mathsf{Z}_t$", color='black')
-    ax.set(title=title, ylabel='$\mathsf{Z}_t$')
+    ax.set(title=title, ylabel='$New cases \mathsf{Z}_t$')
 
     # Formatting the grid
     ax.grid(which="major", linestyle='-', alpha=0.6)
