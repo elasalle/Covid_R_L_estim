@@ -28,7 +28,7 @@ def Rt_C(dates, data, tau=settings.tauWindow):
     Rt = np.zeros(days)
     print("Computing Cori's method estimation (C) ...")
     start = time.time()
-    for t in range(days):
+    for t in range(1, days):
         posteriorA = settings.priorA + np.sum(ZDataProc[max(t - tau + 1, 0):t + 1])
         posteriorB = 1 / settings.priorB + np.sum(ZPhi[max(t - tau + 1, 0):t + 1])
         if posteriorB > 0:
