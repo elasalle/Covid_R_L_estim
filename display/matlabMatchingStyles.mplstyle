@@ -2,7 +2,7 @@ xtick.labelsize : 40
 ytick.labelsize : 40
 axes.titlesize : 40
 axes.labelsize : 45
-legend.fontsize : 50
+legend.fontsize : 30
 axes.linewidth : 2
 lines.linewidth : 4
 font.family : roman

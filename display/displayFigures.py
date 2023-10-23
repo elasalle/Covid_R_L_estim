@@ -63,10 +63,10 @@ def display_REstim(dates, data, REstimate, method, OEstimate=None, comparison=Fa
     formattedDates = [mdates.datestr2num(t) for t in dates]
     if dataUnder:
         fig, axes = plt.subplots(nrows=2, ncols=1, figsize=(19.5, 12))
-        fig.tight_layout(pad=7.5)
+        fig.tight_layout(pad=6.5)
         fig.subplots_adjust(hspace=0.3, right=0.99, bottom=0.05, top=0.95)
-        axR = axes[0]
-        ax = axes[1]
+        axR = axes[1]
+        ax = axes[0]
     else:
         fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(19.5, 9.5))
         fig.tight_layout(pad=5)
@@ -77,7 +77,11 @@ def display_REstim(dates, data, REstimate, method, OEstimate=None, comparison=Fa
     # Displaying (or not) data used for following estimation ---
     if dataUnder:
         ax.plot(formattedDates, data, label="$\mathsf{Z}$", color='black')
-        if OEstimate is not None and method in ['PL', 'Joint']:
+        if comparison:
+            for m in ['PL', 'Joint']:
+                ax.plot(formattedDates, data - OEstimate[m], label='$\mathsf{Z}^{\mathsf{denoised}}$ ($\mathsf{%s}$)' % m,
+                        color=format.colors['denoised%s' % m])
+        elif OEstimate is not None and method in ['PL', 'Joint']:
             ax.plot(formattedDates, data - OEstimate, label='$\mathsf{Z}^{\mathsf{denoised}}$ ',
                     color=format.colors['denoised%s' % method])
         ax.legend(loc='upper left')
