@@ -1,5 +1,5 @@
 from include import settings
-from include.optim_tools import conversionpymat as pymat, CP_covid_5_outlier as cp50, crafting_phi
+from include.optim_tools import conversion_pymat as pymat, CP_covid_5_outlier as cp50, crafting_phi
 
 # Common libraries for computation
 import numpy as np
@@ -28,8 +28,8 @@ def Rt_J(dates, data, lambdaR=3.5, lambdaO=0.03):
     data[data < 0] = 0
 
     # Compute Phi and convolution Phi * Z (here every vector is cropped from 1 day)
-    Phi = craftingPhi.buildPhi(settings.phiBeta, settings.phiAlpha, settings.phiDays)
-    timestamps, ZDataProc, ZPhi = craftingPhi.buildZPhi(dates, data, Phi)
+    Phi = crafting_phi.buildPhi(settings.phiBeta, settings.phiAlpha, settings.phiDays)
+    timestamps, ZDataProc, ZPhi = crafting_phi.buildZPhi(dates, data, Phi)
     ZDataProc = pymat.pyvec2matvec(ZDataProc)
 
     # ----------------------------------------------------------------------------------------------------------
@@ -37,7 +37,7 @@ def Rt_J(dates, data, lambdaR=3.5, lambdaO=0.03):
     choice = pymat.struct()
     choice.prior = 'laplacian'  # or 'gradient'
     choice.dataterm = 'DKL'  # or 'L2'
-    choice.nbiterprint = 100000
+    choice.nbiterprint = 10 ** 5
     choice.iter = 7 * choice.nbiterprint
     choice.nbInf = 7 * choice.nbiterprint
     choice.prec = 10 ** (-6)

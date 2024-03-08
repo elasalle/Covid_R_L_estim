@@ -2,7 +2,7 @@ import numpy as np
 import scipy.stats as spst
 
 from include.optim_tools import opL
-from include.optim_tools import conversionpymat as pymat
+from include.optim_tools import conversion_pymat as pymat
 
 winGaussRef = 5  # to capture similarities over 2 days before and after, in Jaccard index
 sigmaGaussRef = 1.2

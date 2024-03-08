@@ -30,3 +30,4 @@ def matvec2pyvec(arr):
     arr = arr.flatten()
     assert(len(arr) == np.max(shape))
     return arr
+

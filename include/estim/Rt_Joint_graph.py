@@ -44,14 +44,14 @@ def Rt_Jgraph(dates, data, B_matrix, lambdaR=50, lambdaO=0.02, lambdaS=0.005):
         ZDataNorm[d] = ZDataDep[d] / np.std(ZDataDep[d])
         ZPhiNorm[d] = ZPhiDep[d] / np.std(ZDataDep[d])
 
-    # # Run CP covid
+    # Run Chambolle-Pock algorithm for R0 estimation
     choice = pymat.struct()
     choice.prior = 'laplacian'  # or 'gradient'
     choice.dataterm = 'DKL'  # or 'L2'
-    choice.nbiterprint = 10000
-    choice.iter = 40000
+    choice.nbiterprint = 10 ** 5
+    choice.iter = 7 * choice.nbiterprint
     choice.nbInf = 7 * choice.nbiterprint
-    choice.prec = 10**(-6)
+    choice.prec = 10 ** (-6)
     choice.incr = 'R'
 
     print("Computing Joint estimation + Graph (JG) ...")

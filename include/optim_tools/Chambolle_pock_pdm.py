@@ -1,13 +1,9 @@
 import numpy as np
-from include.optim_tools import conversionpymat as pymat
+from include.optim_tools import conversion_pymat as pymat
 
 
 def PD_ChambollePock_primal_BP(data, param, op, prox, objective):
     """
-    Primal-dual algorithm by Chambolle and Pock handling strong convexity when possible.
-    see Chambolle A., Pock T. : A first-order primal-dual algorithm for convex problems
-    with applications to imaging J. Math. Imag. Vis. 40(1), 120 145 (2011)
-    Translation of Matlab's code from N. PUSTELNIK, CNRS, ENS Lyon April 2020
     :param data: ndarray of shape (1, days)
     :param param: structure with options
     :param op: structure with operators (lambda functions)
@@ -19,6 +15,11 @@ def PD_ChambollePock_primal_BP(data, param, op, prox, objective):
              gapR : ndarray of shape (iterations, ) increments on normalized R estimates w.r.t. iterations
              RinftyQuadErr : ndarray of shape (iterations, ) normalized distance to the NOPREC solution
              (maximum : 7 * 10 ** 5 iterations)
+
+    Primal-dual algorithm by Chambolle and Pock handling strong convexity when possible.
+    see Chambolle A., Pock T. : A first-order primal-dual algorithm for convex problems
+    with applications to imaging J. Math. Imag. Vis. 40(1), 120 145 (2011)
+    Translation of Matlab's code from N. PUSTELNIK, CNRS, ENS Lyon April 2020
     """
 
     # Default parameters
@@ -48,7 +49,10 @@ def PD_ChambollePock_primal_BP(data, param, op, prox, objective):
     gap = np.zeros(param.iter)
 
     if param.incr == 'R':
-        previousR = np.zeros(np.max(np.shape(x)))
+        if not (hasattr(param, "noOutlier")):
+            previousR = np.zeros(np.shape(x0[0]))
+        else:
+            previousR = np.zeros(np.shape(x0))
     else:
         previousR = None
 
@@ -75,6 +79,7 @@ def PD_ChambollePock_primal_BP(data, param, op, prox, objective):
             tau = theta * tau
             sig = sig / theta
 
+
         # Update of the dual auxiliary variable
         bx = x + theta * (x - x0)
         x0 = x
@@ -86,7 +91,10 @@ def PD_ChambollePock_primal_BP(data, param, op, prox, objective):
         # # ---------------------------------------------------------------------------------------------
         # Computing the stopping criteria
         if i == 0:
-            previousR = pymat.matvec2pyvec(x[0])  # to prepare new increments
+            if not (hasattr(param, "noOutlier")):
+                previousR = x[0]  # to prepare new increments
+            else:
+                previousR = x
         if i > 0:
             # Stop criterion on objective function increments
             if param.incr == 'obj':
@@ -100,7 +108,10 @@ def PD_ChambollePock_primal_BP(data, param, op, prox, objective):
 
             # Stop criterion on Rt estimates increments
             if param.incr == 'R':
-                newR = pymat.matvec2pyvec(x[0])
+                if not (hasattr(param, "noOutlier")):
+                    newR = x[0]
+                else:
+                    newR = x
                 nonNegPrevR = previousR[previousR > 0]
                 realIncr[i - 1] = np.max(np.abs(newR[previousR > 0] - nonNegPrevR)
                                          / np.maximum(10 ** (-2) * np.ones(np.shape(nonNegPrevR)), nonNegPrevR))
@@ -118,8 +129,7 @@ def PD_ChambollePock_primal_BP(data, param, op, prox, objective):
         if (i % param.nbiterprint == 0) and (i != 0):
             print("iter %f \t crit=%f \n" % (i, obj[i]))  # print the current nb of iterations and objective function
 
-    obj = obj[:i]
+    obj = obj[:i+1]
     gap = gap[:i]
 
     return x, obj, gap
-

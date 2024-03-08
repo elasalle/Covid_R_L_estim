@@ -21,8 +21,8 @@ def Rt_MLE(dates, data):
     data[data < 0] = 0
 
     # Compute Phi and convolution Phi * Z (here every vector is cropped from 1 day)
-    Phi = craftingPhi.buildPhi(settings.phiBeta, settings.phiAlpha, settings.phiDays)
-    timestamps, ZDataProc, ZPhi = craftingPhi.buildZPhi(dates, data, Phi)
+    Phi = crafting_phi.buildPhi(settings.phiBeta, settings.phiAlpha, settings.phiDays)
+    timestamps, ZDataProc, ZPhi = crafting_phi.buildZPhi(dates, data, Phi)
 
     print("Computing Maximum Likelihood Estimator (MLE) ...")
     start = time.time()
