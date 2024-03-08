@@ -1,7 +1,7 @@
 import numpy as np
 
-import settings
-from include.optim_tools import craftingPhi as phi
+from include import settings
+from include.optim_tools import crafting_phi as phi
 
 import pandas as pd
 

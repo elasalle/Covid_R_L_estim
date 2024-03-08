@@ -23,7 +23,7 @@ RegularizationSettings = {'Fast':       (3.5, 0.03),    # for fast trends with a
                           'lowLambdaO': (50 , 0.03),    # for slow trends with a lot of outliers
                           'lowLambdaR': (3.5, 0.75)}    # for fast trends with few outliers
 
-# Used parameters for generation of configurations I, II, III and IV.
+# Used parameters for generation of 1D data with configurations I, II, III and IV.
 Configs = {'I': {'name': 'Fast',
                  'country': 'France',
                  'fday': '2021-11-01',  # 276 days /!\ containing 3 epidemic waves

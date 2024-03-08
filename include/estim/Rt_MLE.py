@@ -1,5 +1,5 @@
-import settings
-from include.optim_tools import craftingPhi
+from include import settings
+from include.optim_tools import crafting_phi
 
 # Common libraries for computation
 import numpy as np

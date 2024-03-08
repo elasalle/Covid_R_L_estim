@@ -1,5 +1,5 @@
 import numpy as np
-import settings
+from include import settings
 
 
 def mad(arr):

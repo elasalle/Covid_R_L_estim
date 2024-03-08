@@ -1,5 +1,5 @@
-import settings
-from include.optim_tools import conversionpymat as pymat, CP_covid_5_outlier as cp50, craftingPhi
+from include import settings
+from include.optim_tools import conversionpymat as pymat, CP_covid_5_outlier as cp50, crafting_phi
 
 # Common libraries for computation
 import numpy as np
