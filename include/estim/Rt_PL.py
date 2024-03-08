@@ -18,7 +18,7 @@ def Rt_PL(dates, data, muR=50):
     :return: REstimate : ndarray of shape (days - 1, ), daily estimation of Rt
              OEstimate : ndarray of shape (days - 1, ), daily estimation of Outliers
              timestamps : ndarray of shape (days -1, )
-             ZDataProc : ndarray of shape (days - 1, )
+             ZDataProc : ndarray of shape (days - 1, ) not normalized !
     """
     # Preprocess : ONLY get rid of negative values
     data[data < 0] = 0
@@ -36,7 +36,7 @@ def Rt_PL(dates, data, muR=50):
     choice.nbiterprint = 100000
     choice.iter = 7 * choice.nbiterprint
     choice.nbInf = 7 * choice.nbiterprint
-    choice.prec = 10 ** (-6)
+    choice.prec = 10 ** (-7)
     choice.incr = 'R'
 
     choice.x0 = np.ones(np.shape(ZDataProc))

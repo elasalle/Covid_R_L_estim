@@ -1,8 +1,7 @@
 import numpy as np
 import scipy.stats as spst
 
-from include.optim_tools import opL
-from include.optim_tools import conversion_pymat as pymat
+from include.optim_tools.opL import opL
 
 winGaussRef = 5  # to capture similarities over 2 days before and after, in Jaccard index
 sigmaGaussRef = 1.2
@@ -38,34 +37,57 @@ def JaccardIndexSignal(X, winGauss=winGaussRef, sigmaGauss=sigmaGaussRef):
     return Intersection / Union, Intersection, Union
 
 
-def JaccardIndexREstim(R1, R2):
+def JaccardIndexREstim(R1true, R2true):
     """
     Computes the Jaccard index (in %) between two R estimates slope changes of same length.
     More precisely, computes the Jaccard index between discrete laplacian operators associated to each time serie.
-    :param R1: ndarray of shape (len(R1),)
-    :param R2: ndarray of shape (len(R2),) where len(R2) = len(R1)
+    :param R1true: ndarray of shape (len(R1),) or (deps, days)
+    :param R2true: ndarray of shape (len(R2),) where len(R2) = len(R1) or (deps, days)
     :return: float : Jaccard index
     """
-    paramL1 = pymat.struct()
-    paramL1.lambd = 1  # just a factor
-    paramL1.type = '1D'
-    paramL1.op = 'laplacian'
-    D2R_opDirect = lambda x_: opL.opL(x_, 'laplacian', 'direct', paramL1)
 
-    assert (len(R1)) == np.max(len(R2))
+    if len(np.shape(R1true)) == 1:
+        R1 = np.reshape(R1true, (1, len(R1true)))
+        R2 = np.reshape(R2true, (1, len(R2true)))
+    else:
+        R1 = R1true
+        R2 = R2true
 
-    laplacianR1 = pymat.matvec2pyvec(D2R_opDirect(pymat.pyvec2matvec(R1)))
-    laplacianR2 = pymat.matvec2pyvec(D2R_opDirect(pymat.pyvec2matvec(R2)))
+    nbDeps, days = np.shape(R1)
+    assert (np.shape(R2)[0] == nbDeps)
+    assert (np.shape(R2)[1] == days)
+
+    laplacianR1 = opL(R1)
+    laplacianR2 = opL(R2)
 
     laplacianR1[np.abs(laplacianR1) < 10 ** (-3)] = 0
     laplacianR2[np.abs(laplacianR2) < 10 ** (-3)] = 0
 
-    D2Rs = np.zeros((2, len(R1)))
-    D2Rs[0] = np.abs(laplacianR1)
-    D2Rs[1] = np.abs(laplacianR2)
+    JaccardIndex = np.zeros(nbDeps)
+    Intersection = np.zeros(nbDeps)
+    Union = np.zeros(nbDeps)
+    D2Rs = np.zeros((nbDeps, 2, days))
+    for k in range(nbDeps):
+        D2Rs[k, 0] = np.abs(laplacianR1[k])
+        D2Rs[k, 1] = np.abs(laplacianR2[k])
+        JaccardIndex[k], Intersection[k], Union[k] = JaccardIndexSignal(D2Rs[k])
 
-    JaccardIndex, Intersection, Union = JaccardIndexSignal(D2Rs)
-    return JaccardIndex * 100
+    if len(np.shape(R1true)) == 1:
+        return np.array(JaccardIndex.flatten()) * 100
+    else:
+        return np.array(JaccardIndex) * 100
+
+
+def JaccardIndexAveraged(groundTruth, estimations):
+    nbDeps, days = np.shape(groundTruth)
+    assert (np.shape(estimations)[0] == nbDeps)
+    assert (np.shape(estimations)[1] == days)
+
+    JaccardByDep = np.zeros(nbDeps)
+    for d in range(nbDeps):
+        JaccardByDep[d] = JaccardIndexREstim(groundTruth[d], estimations[d])  # 1D version of computing Jaccard index
+
+    return 1 / nbDeps * np.sum(JaccardByDep)  # averaging over territories
 
 
 def JaccardIndexREstimMC(groundTruth, estimations):
