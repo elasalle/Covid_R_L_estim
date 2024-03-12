@@ -25,7 +25,7 @@ def display_data(dates, data, title, savefig=False, savePath=None):
     # Formatting the grid
     ax.grid(which="major", linestyle='-', alpha=0.6)
     ax.grid(which="minor", linestyle='--', alpha=0.3)
-    ax.legend()
+    ax.legend(loc="upper left")
 
     # Formatting xticks
     locator, dateFormatter = format.adaptiveDaysLocator(formattedDates)
