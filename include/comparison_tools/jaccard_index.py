@@ -107,3 +107,5 @@ def JaccardIndexREstimMC(groundTruth, estimations):
     for d in range(nbDraws):
         JaccardIndexEstim[d] = JaccardIndexREstim(groundTruth, estimations[d])
     return (1 / nbDraws) * np.sum(JaccardIndexEstim) * 100, (1.96 / np.sqrt(nbDraws)) * np.std(JaccardIndexEstim) * 100
+
+

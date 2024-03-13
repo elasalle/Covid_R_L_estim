@@ -32,3 +32,37 @@ def SignaltoNoiseRatioMC(groundTruth, estimations):
     for draw in range(nbDraws):
         SNREstim[draw] = SignaltoNoiseRatio(groundTruth, estimations[draw])
     return (1 / nbDraws) * np.sum(SNREstim), (1.96 / np.sqrt(nbDraws)) * np.std(SNREstim)
+
+
+def SNRByDep_indic(groundTruth, estimation):
+    """
+    :param estimation: ndarray of shape (nbDeps, days)
+    :param groundTruth: ndarray of shape (nbDeps, days)
+    :return:
+    """
+    nbDeps, days = np.shape(estimation)
+    assert (nbDeps == np.shape(groundTruth)[0])
+    assert (days == np.shape(groundTruth)[1])
+
+    indicators = np.zeros(nbDeps)
+    for d in range(nbDeps):
+        indicators[d] = SignaltoNoiseRatio(groundTruth[d], estimation[d])
+    return indicators  # we should maximize this criteria
+
+
+def SNRMean_indic(groundTruth, estimation):
+    """
+    :param estimation: ndarray of shape (nbDeps, days)
+    :param groundTruth: ndarray of shape (nbDeps, days)
+    :return:
+    """
+    nbDeps, days = np.shape(estimation)
+    assert (nbDeps == np.shape(groundTruth)[0])
+    assert (days == np.shape(groundTruth)[1])
+
+    indicatorsByDep = SNRByDep_indic(groundTruth, estimation)
+    # assert (extremum == 'minimum')
+    assert (len(indicatorsByDep) == nbDeps)
+    indicators = 1 / nbDeps * np.sum(indicatorsByDep)
+
+    return indicators  # we should minimize this criteria
