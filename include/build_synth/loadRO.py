@@ -10,7 +10,7 @@ def loadROconfig(configuration, returnFirstDay=False):
             Oref: ndarray of shape (days, )
             firstDay (optional): str in format 'YYYY-MM-DD'
     """
-    inputData = loadmat('data/Config_%s.mat' % configuration, squeeze_me=True)
+    inputData = loadmat('data/Synthetic/Univariate/Config_%s.mat' % configuration, squeeze_me=True)
     assert(inputData['configuration'] == configuration)
     if returnFirstDay:
         return inputData['Rref'], inputData['OutliersRef'], inputData['firstDay']
