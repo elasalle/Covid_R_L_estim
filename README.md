@@ -15,11 +15,10 @@ project
 **Created in**: June 2023, <b><i> updated in March 2024 </b> </i>
 
 - ---
-<font size="+3"> <b> NEW </b> </font> 
-<font size="+2">: multivariate synthetic infection counts generation and estimators comparison available. </font>
+<font size="+3"> <b> NEW</b></font><font size="+2"> (March 2024): Multivariate synthetic infection counts generation and estimators comparison available. </font>
 
 - ---
-# Estimation of reproduction number 
+# Estimation of multivariate reproduction number 
 
 The estimation codes are associated to the paper written by B. Pascal, P. Abry, N. Pustelnik, S. Roux, R. Gribonval, 
 and P. Flandrin, “Nonsmooth convex optimization to estimate the Covid-19 reproduction number space-time evolution with 
@@ -40,17 +39,25 @@ The different methods used are:
 
 * (MLE) : Maximum Log-likelihood Estimator
 
-* (C) : Cori's method
+* (C) : Bayesian Estimator [1]
 
-* (PL) : Penalized Loglikelihood
+* (U), (U-O) : Univariate variational estimator with temporal regularization, without or with (O) misreported counts explicit modelisation [2]
 
-* (J) : Joint
+* (M), (M-O) : Multivariate variational estimator with temporal and space regularization, without or with (O) misreported counts explicit modelisation [3]
+
+[//]: # (* &#40;PLG&#41; : Penalized Loglikelihood &#40;time and space regularized&#41;)
+
+[//]: # ()
+[//]: # (* &#40;U-O&#41; : Joint)
 
 Code for these methods are to be found in subdirectory <i> include/estim/ </i>.
 
-(PL) and (J) are the results of solving optimization schemes, which tools are described in <i> include/optim_tools/ </i>  
+(U) and (M) are the results of solving optimization schemes, which tools are described in <i> include/optim_tools/ </i>  
 
-# Univariate synthetic infection counts generation
+
+# NEW: Multivariate synthetic infection counts generation
+
+### Synthetic infection counts generation
 The infection counts generation codes are associated to the paper written by J. Du, B. Pascal, and P. Abry, 
 “Compared performance of Covid19 reproduction number estimators based on realistic synthetic data,” 
 in GRETSI’23 XXIX`eme Colloque Francophone de Traitement du Signal et des Images, Grenoble, France, 
@@ -74,16 +81,12 @@ tuning more or less slope changes (lambdaR) and more or less outliers (lambdaO):
 
 Generation of synthetic infection counts files from <b> any ground truth </b> are to be found in <i> include/build_synth/ </i>.
 
+### Spatially correlated multivariate reproduction number time series
 
-# NEW : Multivariate synthetic infection counts generation
-
-### Spatially correlated reproduction number matrices
-
-### Synthetic infection counts generation
 
 # Comparison between R(t) estimators on synthetic infection counts
 
-    demo_compareEstymSynthData.ipynb
+    demo_compareEstimSynthData.ipynb
 
 is a Jupyter notebook that displays comparison of the 4 methods presented earlier on generated synthetic data.
 

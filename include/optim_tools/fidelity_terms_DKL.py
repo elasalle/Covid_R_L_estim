@@ -3,18 +3,17 @@ import numpy as np
 
 def DKL_no_outlier(X, Y, alpha):
     """
+    Used in CP_covid_4.py file.
+    :param X: ndarray with shape (1, days), should be estimated R
+    :param Y: ndarray with shape (1, days), should be data
+    :param alpha: ndarray with shape (days,), should be the convolution between data and Phi (infectiousness)
+    :return: float
     Returns the Kullback-Leibler divergence.
     Note: for an observation z in R degraded by a Poisson noise with parameter
     alpha, the KL divergence reads
     KL(x,y,alpha) = alpha*x - y + y log(y/alpha*x)           if y>0 & x>0,
     KL(x,y,alpha) = alpha*x                                  if y=0 & x>=0,
     KL(x,y,alpha) = +Inf                                     otherwise.
-    Used in CP_covid_4.py file.
-    :param X: ndarray with shape (1, days), should be estimated R
-    :param Y: ndarray with shape (1, days), should be data
-    :param alpha: ndarray with shape (days,), should be the convolution between data and Phi (infectiousness)
-    :return: float
-
     """
     r = X
     zData = Y
@@ -31,20 +30,20 @@ def DKL_no_outlier(X, Y, alpha):
 
 def DKLw_outlier(X, Y, alpha):
     """
+    Used in CP_covid_5_outlier and multivariate ver.
+    :param X: ndarray with shape (2, dep, days), should be estimated R and estimated O
+    :param Y: ndarray with shape (dep, days), should be data
+    :param alpha: ndarray with shape (dep, days), should be the convolution between data and Phi (infectiousness)
+    :return: float
     Returns the Kullback Leibler divergence.
     Note: for an observation z in R degraded by a Poisson noise with parameter
     alpha, the KL divergence reads
     KL(x,y,alpha) = alpha*x - y + y log(y/alpha*x)           if y>0 & x>0,
     KL(x,y,alpha) = alpha*x                                  if y=0 & x>=0,
     KL(x,y,alpha) = +Inf                                     otherwise.
-    Used in CP_covid_5_outlier_0cas.
-    :param X: ndarray with shape (2, 1, days), should be estimated R and estimated O
-    :param Y: ndarray with shape (1, days), should be data
-    :param alpha: ndarray with shape (days,), should be PhiZ or ZPhi
-    :return: float
     """
-    r = X[0, :]
-    o = X[1, :]
+    r = X[0]
+    o = X[1]
     zData = Y
 
     x = alpha * r + o
@@ -66,15 +65,13 @@ def prox_DKL_no_outlier(x, data, alpha, gamma):
     :param x: ndarray of shape (1, days)
     :param data: ndarray of same (1, days)
     :param alpha: ndarray of shape (days,) equivalent to (1, days) shape,  or float == 1 when not used
-    :param gamma:
+    :param gamma: float
     :return: prox ndarray of shape (1, days)
 
     """
     prox = (x - gamma * alpha + np.sqrt(np.abs(x - gamma * alpha) ** 2 + 4 * gamma * data)) / 2
 
-    index = np.argwhere((alpha == 0) * (data.flatten() == 0))
-    if index:
-        prox[index] = np.zeros(len(index))
+    prox[(alpha == 0) * (data == 0)] = 0
     return prox
 
 
@@ -101,7 +98,7 @@ def prox_DKLw_outlier(X, data, alpha, tau):
 
 def prox_DKLw_outlier_0cas(X, data, alpha, tau):
     """
-    Computes the proximal operator associated to gamma * Kullback-Leibler divergence between 'alpha * x' and 'data' and
+    Returns the proximal operator associated to gamma * Kullback-Leibler divergence between 'alpha * x' and 'data' and
     that takes into account the zero values in 'y'. y represents data. We denote days = len(data).
     :param X: ndarray of shape (3, 1, days)
     :param data: ndarray of shape (1, days)
@@ -119,6 +116,6 @@ def prox_DKLw_outlier_0cas(X, data, alpha, tau):
     preprox2 = (RPhiZO - prox_DKL) / (alpha ** 2 + 1)
     prox1 = X1 - preprox1
     prox2 = X2 - preprox2
-    prox1[0, (data[0] == 0) * (alpha == 0)] = 0
-    prox2[0, (data[0] == 0) * (alpha == 0)] = 0
+    prox1[(data == 0) * (alpha == 0)] = 0
+    prox2[(data == 0) * (alpha == 0)] = 0
     return np.array([prox1, prox2])

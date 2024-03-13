@@ -13,14 +13,14 @@ def Rt_J(dates, data, lambdaR=3.5, lambdaO=0.03):
     Chambolle-Pock algorithm). Hyperparameters choice has to be as followed :
     - lambda R sets piecewise linearity of Rt
     - lambda O sets sparsity of the outliers Ot
-    :param dates ndarray of shape (days, )
-    :param data ndarray of shape (days, )
-    :param lambdaR : regularization parameter for piecewise linearity of Rt
-    :param lambdaO : regularization parameters for sparsity of O
-    :return: REstimate : ndarray of shape (days - 1, ), daily estimation of Rt
-             OEstimate : ndarray of shape (days - 1, ), daily estimation of Outliers
-             timestamps : ndarray of shape (days -1, ) representing dates
-             ZDataProc : ndarray of shape (days - 1, ) representing processed data
+    :param dates: list of str of length (days, )
+    :param data: ndarray of shape (days, )
+    :param lambdaR: regularization parameter for piecewise linearity of Rt
+    :param lambdaO: regularization parameters for sparsity of O
+    :return: REstimate: ndarray of shape (days - 1, ), daily estimation of Rt
+             OEstimate: ndarray of shape (days - 1, ), daily estimation of Outliers
+             timestamps: ndarray of shape (days -1, ) representing dates
+             ZDataProc: ndarray of shape (days - 1, ) representing processed data
     """
     assert(len(data) == len(dates))
 

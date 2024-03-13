@@ -7,7 +7,7 @@ from include.optim_tools import crafting_phi
 from include.optim_tools import CP_covid_4_graph as cp4g
 
 
-def Rt_PL_graph(dates, data, B_matrix, muR=50, muS=0.008):
+def Rt_PL_graph(dates, data, B_matrix, muR=50, muS=0.005):
     """
     Computes the evolution of the reproduction number R for the indicated country and between dates 'fday' and 'lday'.
     The method used is detailed in optim_tools/CP_covid_4_graph.py
@@ -28,6 +28,8 @@ def Rt_PL_graph(dates, data, B_matrix, muR=50, muS=0.008):
     """
     # Gamma pdf
     Phi = crafting_phi.buildPhi()
+
+    data[data < 0] = 0
 
     # Normalize each counts for each vertex
     depts, days = np.shape(data)
