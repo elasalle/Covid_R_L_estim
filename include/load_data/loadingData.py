@@ -14,8 +14,8 @@ def loadingData_byDay():
     :return: timestamps: ndarray of str format 'year-month-day' (dates)
              confirmed : ndarray of integers (daily new infections in France)
     """
-    webdata = pd.read_csv('https://www.data.gouv.fr/fr/datasets/r/4e8d826a-d2a1-4d69-9ed0-b18a1f3d5ce2', sep=';')
-
+    # webdata = pd.read_csv('https://www.data.gouv.fr/fr/datasets/r/4e8d826a-d2a1-4d69-9ed0-b18a1f3d5ce2', sep=';')
+    webdata = pd.read_csv('data/Real-world/SiDEP-France-by-day-2023-06-30-16h26.csv', sep=';')
     # Dates
     timestamps = webdata['jour'].to_numpy()  # str format 'year-month-day'
     confirmedWrongFormat = webdata['P'].to_numpy()
@@ -32,8 +32,8 @@ def loadingData_hosp():
     :return: timestamps: ndarray of str format 'year-month-day' (dates)
              confirmed : ndarray of integers (daily new entrances to the hospital in France)
     """
-    webdata = pd.read_csv('https://www.data.gouv.fr/fr/datasets/r/63352e38-d353-4b54-bfd1-f1b3ee1cabd7', sep=';')
-
+    # webdata = pd.read_csv('https://www.data.gouv.fr/fr/datasets/r/63352e38-d353-4b54-bfd1-f1b3ee1cabd7', sep=';')
+    webdata = pd.read_csv('data/Real-world/SiDEP-France-hosp-2023-03-31-18h01.csv', sep=';')
     # Dates
     days = webdata['jour'].to_numpy()  # str format 'year-month-day'
     totalDays = date.fromisoformat(days[len(days) - 1]) - date.fromisoformat(days[0])  # datetime format
@@ -69,10 +69,10 @@ def loadingData_JHU(country):
     :return: timestamps: ndarray of str format 'year-month-day' (dates)
              confirmed : ndarray of integers (daily new infections)
     """
-    url = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/' + \
-          'csse_covid_19_time_series/time_series_covid19_confirmed_global.csv'
-    filename = 'COVID-19-JH_confirmed-worldwide.csv'  # for saving purposes
-    webdata = pd.read_csv(url)
+    # url = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/' + \
+    #       'csse_covid_19_time_series/JHU-worldwide-covid19-daily-new-infections.csv'
+    # webdata = pd.read_csv(url)
+    webdata = pd.read_csv('data/Real-world/JHU-worldwide-covid19-daily-new-infections.csv')
 
     # Dates start at 5th column of webdata columns names
     timestamps = pd.to_datetime(webdata.columns[4:], format='%x').strftime('%Y-%m-%d')  # strftime to get only Y-m-d
@@ -108,7 +108,8 @@ def loadingData_hospDep():
              confirmed : ndarray matrix of integers (daily new entrances to the hospital in France) by 'département'
                          of shape (totalDeps, totalDays)
     """
-    webdata = pd.read_csv('https://www.data.gouv.fr/fr/datasets/r/63352e38-d353-4b54-bfd1-f1b3ee1cabd7', sep=';')
+    # webdata = pd.read_csv('https://www.data.gouv.fr/fr/datasets/r/63352e38-d353-4b54-bfd1-f1b3ee1cabd7', sep=';')
+    webdata = pd.read_csv('data/Real-world/SiDEP-France-hosp-2023-03-31-18h01.csv', sep=';')
 
     # Dates
     days = webdata['jour'].to_numpy()  # str format 'year-month-day'
@@ -116,7 +117,7 @@ def loadingData_hospDep():
     totalDays = totalDays.days + 1  # integer now
     timestamps = days[:totalDays]
 
-    # Data
+    # Retrieving infection counts
     nbDepartments = int(len(days) / totalDays)
     hospitalized = webdata['hosp'].to_numpy()
     reanimated = webdata['rea'].to_numpy()
@@ -144,8 +145,8 @@ def loadingData_byDep():
     :return: timestamps: ndarray of str format 'year-month-day' (dates from 2020-05-13)
              confirmed : ndarray matrix of integers (daily new entrances to the hospital in France) by 'département'
     """
-    webdata = pd.read_csv('https://www.data.gouv.fr/fr/datasets/r/426bab53-e3f5-4c6a-9d54-dba4442b3dbc', sep=';')
-
+    # webdata = pd.read_csv('https://www.data.gouv.fr/fr/datasets/r/426bab53-e3f5-4c6a-9d54-dba4442b3dbc', sep=';')
+    webdata = pd.read_csv('data/Real-world/SiDEP-France-by-day-by-dep-2023-06-30-16h26.csv', sep=';')
     # Total number of days
     days = webdata['jour'].to_numpy()  # str format 'year-month-day'
     totalDays = date.fromisoformat(days[-1]) - date.fromisoformat(days[0])  # datetime format
@@ -161,17 +162,10 @@ def loadingData_byDep():
     totalDeps = len(allDeps)
     assert(totalDeps == np.max(np.shape(np.where(days == days[-1]))) - 2)
 
-    # Data
-
+    # Retrieving infection counts
     confirmed = np.zeros((totalDeps, totalDays))
     allInfectionsWrongFormat = webdata['P'].to_numpy()
     allInfections = np.array([p.replace(',', '.') for p in allInfectionsWrongFormat])
     for indexDep in np.arange(totalDeps):
         confirmed[indexDep] = allInfections[np.where(depsRaw == allDeps[indexDep])]
-        # # Checking if the days are correctly associated --------------------------------------------------------------
-        # i = 0
-        # for day in days[np.where(depsRaw == allDeps[indexDep])]:
-        #     assert(day == timestamps[i])
-        #     i += 1
-        # # ------------------------------------------------------------------------------------------------------------
     return np.array(timestamps), np.array(confirmed, dtype=float), allDeps
