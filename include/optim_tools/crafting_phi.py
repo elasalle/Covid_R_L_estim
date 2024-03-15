@@ -50,34 +50,3 @@ def buildZPhi(timestamps, ZData, Phi):
     ZDataCropped = ZData[1:]
     return timestamps, ZDataCropped, ZPhiNormalized
 
-
-def buildZPhiMATLAB(timestamps, ZData, Phi):
-    """
-    Given the timestamps, data (ZData) and a distribution Phi over len(Phi) days, computes ZPhi which is the data
-    convoluted with distribution (Phi) normalized both for the first len(Phi) days, and any other days.
-    :param timestamps: array of shape (days,)
-    :param ZData: array of shape (days,)
-    :param Phi: array of shape (len(Phi), ) : pdf of some distribution accounting for the infectiousness of the disease,
-    over time during len(Phi) days.
-    :return: timestamps : array of shape (days -1,) timestamps cropped of the first day
-             ZDataCropped : array of shape (days - 1,) ZData cropped of the first day
-             ZPhi : array of shape (days - 1,) data on which we apply a "normalized convolution" with Phi
-    """
-    Phi = Phi / np.sum(Phi)
-    ZPhi = np.convolve(ZData.flatten(), Phi)
-    ZPhi = ZPhi[:max(np.shape(ZData))]
-
-    # Modified convolution : normalized convolution for the first tauPhi days.
-    tauPhi = len(Phi) - 1  # wrong explanation in papers (tauPhi =/= len(Phi) = 26)
-    ZPhiModif = np.copy(ZPhi)
-    ZPhiModif[: tauPhi] = 0
-    for T in range(1, tauPhi):  # at day 0, the convolution stays at 0.
-        PhiNormalized = Phi[:T+1] / np.sum(Phi[:T+1])
-        fZ = np.flip(ZData[:T+1])
-        ZPhiModif[T] = np.sum(fZ * PhiNormalized)
-
-    # Crop ZPhi and ZData : first day of computing R is irrelevant since we only have one sample.
-    timestamps = timestamps[1:]
-    ZPhiModif = ZPhiModif[1:]
-    ZDataCropped = ZData[1:]
-    return timestamps, ZDataCropped, ZPhiModif
