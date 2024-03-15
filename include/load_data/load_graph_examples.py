@@ -60,7 +60,7 @@ def example_choice(example):
                             [-1, -1,  0, -1,  1]])
 
     else:
-        ExampleError = ValueError("See data/Synthetic/Multivariate/graph_examples.py for available examples.")
+        ExampleError = ValueError("See data/Synthetic/Multivariate/load_graph_examples.py for available examples.")
         raise ExampleError
 
     depsIndexes = range(5)
@@ -113,7 +113,7 @@ def example_choice(example):
         pos[depsIndexes[3]] = (2, -0.5)
         pos[depsIndexes[4]] = (0, -0.5)
     else:
-        ExampleError = ValueError("See data/Synthetic/Multivariate/graph_examples.py for available examples.")
+        ExampleError = ValueError("See data/Synthetic/Multivariate/load_graph_examples.py for available examples.")
         raise ExampleError
     
     return depCont, pos

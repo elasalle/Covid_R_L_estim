@@ -5,7 +5,7 @@ import scipy.stats as spst
 def buildPhi(beta=1.87, alpha=1 / 0.28, nbDays=26):
     """
     Build the gamma pdf to be convoluted with another 26 daily new infections' data.
-    By default, we use parameters defined in datesChoice.py.
+    By default, we use parameters defined in date_choice.py.
     :return: Phi : ndarray of shape (26,)
     """
     # beta = 1.87
