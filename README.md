@@ -15,7 +15,8 @@ project
 **Created in**: June 2023, <b><i> updated in March 2024 </b> </i>
 
 - ---
-<font size="+3"> <b> NEW</b></font><font size="+2"> (March 2024): Multivariate synthetic infection counts generation and estimators comparison available. </font>
+<font size="+3"> <b> NEW</b></font><font size="+2"> (March 2024): Multivariate synthetic infection counts generation and
+estimators comparison available. </font>
 
 - ---
 # Estimation of multivariate reproduction number 
@@ -58,7 +59,7 @@ Code for these methods are to be found in subdirectory <i> include/estim/ </i>.
 # NEW: Multivariate synthetic infection counts generation
 
 ### Synthetic infection counts generation
-The infection counts generation codes are associated to the paper written by J. Du, B. Pascal, and P. Abry, 
+This work is associated to the paper written by J. Du, B. Pascal, and P. Abry, 
 “Compared performance of Covid19 reproduction number estimators based on realistic synthetic data,” 
 in GRETSI’23 XXIX`eme Colloque Francophone de Traitement du Signal et des Images, Grenoble, France, 
 Aug.28 - Sept. 1 2023, also <a href="https://hal.science/hal-04032614v2/document"> available on HAL </a>.
@@ -82,9 +83,13 @@ tuning more or less slope changes (lambdaR) and more or less outliers (lambdaO):
 Generation of synthetic infection counts files from <b> any ground truth </b> are to be found in <i> include/build_synth/ </i>.
 
 ### Spatially correlated multivariate reproduction number time series
+This work is associated to the paper written by J. Du, B. Pascal, and P. Abry, "Synthetic Spatiotemporal Covid19 
+Infection Counts to Assess Graph-Regularized Estimation of Multivariate Reproduction Numbers" 
+[available on HAL](<https://hal.science/hal-04501967>).
 
 
-# Comparison between R(t) estimators on synthetic infection counts
+
+# Comparison between R estimators on synthetic infection counts
 
     demo_compareEstimSynthData.ipynb
 
