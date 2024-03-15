@@ -18,6 +18,28 @@ def randomDates(firstDay, days):
     return dates
 
 
+def firstCasesCorrection(data, REstim, OEstim):
+    """
+    Return corrected first cases of data so that firstCases does not have outliers effect.
+    :param data: ndarray of shape (nbDeps, days)
+    :param REstim: ndarray of shape (nbDeps, days)
+    :param OEstim: ndarray of shape (nbDeps, days)
+    :return: firstCases: ndarray of shape (nbDeps,)
+             dates_crop: ndarray of shape (days - 1, )
+             REstim_crop: ndarray of shape (nbDeps, days - 1)
+             OEstim_crop: ndarray of shape (nbDeps, days - 1)
+    """
+    nbDeps, days = np.shape(REstim)
+    firstCases = np.zeros(nbDeps)
+    for k in range(nbDeps):
+        if REstim[k][0] == 0:
+            firstCases[k] = 0
+        else:
+            firstCases[k] = max((data[k][0] - OEstim[k][0]) / REstim[k][0], data[k][0])
+
+    return firstCases, REstim[:, 1:], OEstim[:, 1:]
+
+
 def buildData_anyRO(R, Outliers, firstCases, firstDay='2020-01-23', threshold=settings.thresholdPoisson):
     """
     Build data Z drawn from Poisson distribution with mean (R * Phi Z + Out) with the given firstCases (1 day)
@@ -60,3 +82,22 @@ def buildData_anyRO(R, Outliers, firstCases, firstDay='2020-01-23', threshold=se
         ZData[k] = np.random.poisson(max(realR[k] + OutliersRescaled[k-1], threshold))
 
     return randomDates(firstDay, len(ZData[1:])), ZData[1:]  # cropped from the initialization with 'real' firstCases
+
+
+def buildDataMulti_anyRO(R, Outliers, firstCases, firstDay='2020-01-23', threshold=settings.thresholdPoisson):
+    """
+    Build data Z drawn from Poisson distribution with mean (R * Phi Z + Out) with the given firstCases (1 day)
+    :param R: ndarray of shape (deps, days)
+    :param firstCases : ndarray of shape (deps,) indicating number of cases of the original data, only used for init.
+    :param Outliers: ndarray of shape (deps, days)
+    :param firstDay: (optional) str in format 'YYYY-MM-DD' to indicate first day of random dates drawn
+    :param threshold: (optional) inferior limit for Poisson parameter : float
+    :return datesBuilt: list of str in format 'YYYY-MM-DD' random dates associated with ZDataBuilt
+            ZDataBuilt: ndarray of shape (days, ) built following Cori's epidemiological model
+    """
+    deps, days = np.shape(R)
+    ZData = np.zeros((deps, days))
+
+    for d in range(deps):
+        datesBuilt, ZData[d] = buildData_anyRO(R[d], Outliers[d], firstCases[d], firstDay=firstDay, threshold=threshold)
+    return randomDates(firstDay, len(ZData[0])), ZData  # cropped from the initialization with 'real' firstCases
