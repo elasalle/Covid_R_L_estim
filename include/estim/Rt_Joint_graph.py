@@ -18,7 +18,8 @@ def Rt_Jgraph(dates, data, B_matrix=np.ones((1, 1)), lambdaR=3.5, lambdaO=0.02, 
     - lambda S sets total variations regularity on the chosen graph 'G'
     :param dates: list of str of length (days, )
     :param data: ndarray of shape (counties, days)
-    :param B_matrix:
+    :param B_matrix: ndarray of shape (|E|, counties) : operator matrix for the Graph Total Variations where E are the
+    edges of the associated graph. Also corresponds to the transposed incidence matrix
     :param lambdaR: regularization parameter for piecewise linearity of Rt
     :param lambdaO: regularization parameters for sparsity of O
     :param lambdaS: regularization parameters for spatial coherence

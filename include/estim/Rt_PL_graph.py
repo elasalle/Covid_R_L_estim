@@ -9,20 +9,20 @@ from include.optim_tools import CP_covid_4_graph as cp4g
 
 def Rt_PL_graph(dates, data, B_matrix, muR=50, muS=0.005):
     """
-    Computes the evolution of the reproduction number R for the indicated country and between dates 'fday' and 'lday'.
-    The method used is detailed in optim_tools/CP_covid_4_graph.py
-    (regularized optimization scheme solved using Chambolle-Pock algorithm).
-    Hyperparameters choice has to be as followed :
+    Computes the evolution of the reproduction number R for counties on a graph.
+    The method used is detailed in optim_tools/CP_covid_4_graph.py (regularized optimization scheme solved using
+    Chambolle-Pock algorithm). Hyperparameters choice has to be as followed :
     - mu R sets piecewise linearity of Rt
-    - mu S sets total variations regularity on the chosen graph 'G'
+    - mu S sets spatial regularity of Rt on the chosen graph which transposed incidence matrix is 'B_matrix'.
     :param dates : ndarray of shape (days, )
     :param data : ndarray of shape (days, )
-    :param B_matrix: ndarray of shape (nbEdges, nbTerritories ) matrix encoding the graph used
-    :param muR: float
-    :param muS: float
+    :param B_matrix: ndarray of shape (|E|, counties) : operator matrix for the Graph Total Variations where E are the
+    edges of the associated graph. Also corresponds to the transposed incidence matrix
+    :param muR: regularization parameter for piecewise linearity of Rt
+    :param muS: regularization parameters for spatial coherence
     :return: REstimate : ndarray of shape (days - 1, )
              datesUpdated : list of str of length (days - 1)
-             ZDataNorm : ndarray of shape (days - 1) NORMALIZED
+             ZDataNorm : ndarray of shape (days - 1) (normalized by county)
              ZPhiNorm : ndarray of shape (days - 1)
              optionals : dict containing execution time, stopping criteria studies
     """
@@ -34,19 +34,18 @@ def Rt_PL_graph(dates, data, B_matrix, muR=50, muS=0.005):
     # Normalize each counts for each vertex
     depts, days = np.shape(data)
     ZDataDep = np.zeros((depts, days - 1))
-    ZPhiDep = np.zeros((depts, days - 1))
     ZDataNorm = np.zeros((depts, days - 1))
     ZPhiNorm = np.zeros((depts, days - 1))
     datesUpdated = dates[1:]
     for d in range(depts):
-        tmpDates, ZDataDep[d], ZPhiDep[d] = crafting_phi.buildZPhi(dates, data[d], Phi)
+        tmpDates, ZDataDep[d], ZPhiDep = crafting_phi.buildZPhi(dates, data[d], Phi)
         # Asserting dates are cropped from first day
         assert (len(tmpDates) == len(datesUpdated))  # == days - 1
         for i in range(days - 1):
             assert (tmpDates[i] == datesUpdated[i])
         # Normalizing for each 'département'
         ZDataNorm[d] = ZDataDep[d] / np.std(ZDataDep[d])
-        ZPhiNorm[d] = ZPhiDep[d] / np.std(ZDataDep[d])
+        ZPhiNorm[d] = ZPhiDep / np.std(ZDataDep[d])
 
     # Run CP covid
     choice = pymat.struct()
@@ -63,10 +62,5 @@ def Rt_PL_graph(dates, data, B_matrix, muR=50, muS=0.005):
     executionTime = time.time() - start_time
     print("Done in %.4f seconds ---" % executionTime)
 
-    optionals = {'executionTime': executionTime,
-                 'crit': crit,
-                 'gap': gap,
-                 'prec': choice.prec}
-
-    return REstimate, datesUpdated, ZDataNorm, ZPhiNorm, optionals
+    return REstimate, datesUpdated, ZDataDep
 

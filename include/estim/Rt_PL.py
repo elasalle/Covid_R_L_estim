@@ -13,8 +13,8 @@ def Rt_PL(dates, data, muR=50):
     Chambolle-Pock algorithm).
     (optional) One can choose the regularization parameter muR that sets the penalization for piecewise linearity of Rt
     :param dates: list of str of length (days, )
-    :param data ndarray of shape (days, )
-    :param muR : regularization parameter for piecewise linearity of Rt
+    :param data: ndarray of shape (days, )
+    :param muR: regularization parameter for piecewise linearity of Rt
     :return: REstimate : ndarray of shape (days - 1, ), daily estimation of Rt
              timestamps : ndarray of shape (days -1, )
              ZDataProc : ndarray of shape (days - 1, ) not normalized !
