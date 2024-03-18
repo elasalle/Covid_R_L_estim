@@ -88,7 +88,7 @@ associated synthetic infection counts generated using five inter-county correlat
 is a Jupyter notebook that displays comparison of the 4 univariate methods presented earlier on generated univariate 
 synthetic infection counts. Soon to be available : multivariate comparison.
 
-SNR, MSE and Jaccard index are used for comparison are described in <i> include/comparison_tools/ </i>.
+SNR, MSE and Jaccard index are used for comparison are described in `include/comparison_tools/`.
 
 Note : all the display functions are to be found in `display/`.
 

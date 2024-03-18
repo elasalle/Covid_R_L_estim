@@ -1,10 +1,11 @@
 import numpy as np
+import networkx as nx
 
 
 def example_choice(example):
     """
     :param example: str between 'Line', 'T-form', 'Hub', 'Caterpillar', 'Fly', 'Frog', 'Butterfly' and 'Flower'.
-    :return: depCont : ndarray of shape (5, 5) containing 1 and -1 to indicate edges of the associated network
+    :return: depCont : ndarray of shape (5, 5) : Id - A where A is the adjacency matrix of the chosen directed graph.
              pos : dictionary {k: (i, j)} where k in range(5) and (i, j) euclidian position for displaying B_matrix.
 
     """
@@ -115,5 +116,25 @@ def example_choice(example):
     else:
         ExampleError = ValueError("See data/Synthetic/Multivariate/load_graph_examples.py for available examples.")
         raise ExampleError
-    
-    return depCont, pos
+
+    labels = {0: 1, 1: 2, 2: 3, 3: 4, 4: 5}
+    colorMap = ['#99CCFF', '#339966', '#FFC266', '#FF6666', '#999999']
+
+    return depCont, pos, labels, colorMap
+
+
+def set_Graph_fromMatrix(matrix):
+    """
+    Displays the undirected network associated to Id - A `matrix` is the adjacency matrix of a chosen directed graph.
+    Note that edges are doubled if the connectivity structure is initially not directed.
+    :param matrix: Id - A where A is the adjacency matrix.
+    :returns: Graph: networkx Graph object (G, E) used to display graph
+
+    """
+    Graph = nx.Graph()
+    n, m = np.shape(matrix)
+    for i in range(n):
+        for j in range(m):
+            if matrix[i, j] == -1:
+                Graph.add_edge(i, j)  # duplicates are not drawn nor counted as a different edge
+    return Graph
