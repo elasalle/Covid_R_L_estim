@@ -2,59 +2,59 @@ import numpy as np
 import networkx as nx
 
 
-def example_choice(example):
+def connectStruct_choice(example):
     """
     :param example: str between 'Line', 'T-form', 'Hub', 'Caterpillar', 'Fly', 'Frog', 'Butterfly' and 'Flower'.
-    :return: depCont : ndarray of shape (5, 5) : Id - A where A is the adjacency matrix of the chosen directed graph.
+    :return: strucMat : ndarray of shape (5, 5) : Id - A where A is the adjacency matrix of the chosen directed graph.
              pos : dictionary {k: (i, j)} where k in range(5) and (i, j) euclidian position for displaying B_matrix.
 
     """
     if example == 'Line':
-        depCont = np.array([[ 1, -1,  0,  0,  0],
+        strucMat = np.array([[ 1, -1,  0,  0,  0],
                             [-1,  1, -1,  0,  0],
                             [ 0, -1,  1, -1,  0],
                             [ 0,  0, -1,  1, -1],
                             [ 0,  0,  0, -1,  1]])
     elif example == 'Hub':
-        depCont = np.array([[ 1, -1,  0,  0,  0],
+        strucMat = np.array([[ 1, -1,  0,  0,  0],
                             [-1,  1, -1, -1, -1],
                             [ 0, -1,  1,  0,  0],
                             [ 0, -1,  0,  1,  0],
                             [ 0, -1,  0,  0,  1]])
 
     elif example == 'T-form':
-        depCont = np.array([[ 1, -1,  0,  0,  0],
+        strucMat = np.array([[ 1, -1,  0,  0,  0],
                             [-1,  1, -1,  0,  0],
                             [ 0, -1,  1, -1, -1],
                             [ 0,  0, -1,  1,  0],
                             [ 0,  0, -1,  0,  1]])
 
     elif example == 'Caterpillar':
-        depCont = np.array([[ 1, -1,  0,  0,  0],
+        strucMat = np.array([[ 1, -1,  0,  0,  0],
                             [-1,  1, -1,  0,  0],
                             [ 0, -1,  1, -1, -1],
                             [ 0,  0, -1,  1, -1],
                             [ 0,  0, -1, -1,  1]])
     elif example == 'Fly':
-        depCont = np.array([[ 1, -1,  0,  0,  0],
+        strucMat = np.array([[ 1, -1,  0,  0,  0],
                             [-1,  1, -1,  0, -1],
                             [ 0, -1,  1, -1, -1],
                             [ 0,  0, -1,  1,  0],
                             [ 0, -1, -1,  0,  1]])
     elif example == 'Frog':
-        depCont = np.array([[ 1, -1,  0,  0,  0],
+        strucMat = np.array([[ 1, -1,  0,  0,  0],
                             [-1,  1, -1, -1, -1],
                             [ 0, -1,  1, -1,  0],
                             [ 0, -1, -1,  1,  0],
                             [ 0, -1,  0,  0,  1]])
     elif example == 'Butterfly':
-        depCont = np.array([[ 1, -1,  0,  0, -1],
+        strucMat = np.array([[ 1, -1,  0,  0, -1],
                             [-1,  1, -1, -1, -1],
                             [ 0, -1,  1, -1,  0],
                             [ 0, -1, -1,  1,  0],
                             [-1,  0,  0, -1,  1]])
     elif example == 'Flower':
-        depCont = np.array([[ 1, -1, -1,  0, -1],
+        strucMat = np.array([[ 1, -1, -1,  0, -1],
                             [-1,  1, -1, -1, -1],
                             [-1, -1,  1, -1,  0],
                             [ 0, -1, -1,  1, -1],
@@ -120,7 +120,7 @@ def example_choice(example):
     labels = {0: 1, 1: 2, 2: 3, 3: 4, 4: 5}
     colorMap = ['#99CCFF', '#339966', '#FFC266', '#FF6666', '#999999']
 
-    return depCont, pos, labels, colorMap
+    return strucMat, pos, labels, colorMap
 
 
 def set_Graph_fromMatrix(matrix):
