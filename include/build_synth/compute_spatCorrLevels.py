@@ -1,12 +1,5 @@
 from scipy.io import savemat, loadmat
-from include.build_synth import deltaGrid as dG
-
-namesDiff = {'NoDiffusion': '0',
-             'Low': '\delta_\mathtt{I}',
-             'Medium': '\delta_\mathtt{II}',
-             'High': '\delta_\mathtt{III}',
-             'VeryHigh': '\delta_\mathtt{IV}',
-             'SuperHigh': '\delta_\mathtt{V}'}
+from include.build_synth import choice_delta as dG
 
 
 def compute_spatCorrLevels(R_by_county, B_matrix, fileSuffix='Last', saveData=True):
@@ -29,7 +22,7 @@ def compute_spatCorrLevels(R_by_county, B_matrix, fileSuffix='Last', saveData=Tr
     delta_IV = fileInit['deltaSVeryHigh'] / fileInit['deltaSmin'] * delta_min
 
     if saveData:
-        savemat("include/build_synth/deltaFiles/diffusionLevels%s.mat" % fileSuffix,
+        savemat("include/build_synth/deltaFiles/chosenSpatCorrLevels%s.mat" % fileSuffix,
                 {'delta_I': delta_I,
                  'delta_II': delta_II,
                  'delta_III': delta_III,

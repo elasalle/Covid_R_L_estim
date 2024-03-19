@@ -22,7 +22,7 @@ def compute_delta_withG(REstimates, B_matrix, firstPower=-15, lastPower=5, step=
     :return: delta : ndarray of shape (20,)
     """
 
-    path = 'include/build_synth/deltaFiles/deltaSpatCorrLevels%s.mat' % fileSuffix
+    path = 'include/build_synth/deltaFiles/deltaMinMaxSpatCorr%s.mat' % fileSuffix
 
     if os.path.exists(path) == 0:
 
@@ -52,7 +52,7 @@ def compute_delta_withG(REstimates, B_matrix, firstPower=-15, lastPower=5, step=
                     continue
             print("power=", power)
             deltaS = 10 ** power
-            print('Computing diffusion with deltaS = 10 ** (%.1f) ----' % power)
+            print('Computing diffusion with delta = 10 ** (%.1f) ----' % power)
             RDiff = Tikhonov_spat_corr(REstimates, B_matrix, deltaS)
             if minSearch:
                 dissMin = np.abs(initSpatReg - np.sum(np.abs(np.dot(B_matrix, RDiff)) ** 2))
@@ -63,7 +63,7 @@ def compute_delta_withG(REstimates, B_matrix, firstPower=-15, lastPower=5, step=
             powerMin -= step  # border effect because we computed the first deltaS s.t. dissMin > prec
         if dissMax > prec:
             powerMax += step  # border effect because we computed the first deltaS s.t. dissMax > prec
-        print("Saving delta max and min in include/deltaFiles/deltaSpatCorrLevels%s.mat" % fileSuffix)
+        print("Saving delta max and min in include/deltaFiles/deltaMinMaxSpatCorr%s.mat" % fileSuffix)
         savemat(path, {'deltaSmax': 10 ** powerMax,
                        'deltaSmin': 10 ** powerMin,
                        'powerMax': powerMax,
@@ -89,7 +89,7 @@ def deltaGrid(number=500, fileSuffix='Last'):
     :param number : int (optional)
     :return: list of `number` delta that span regularly increasing levels of correlation.
     """
-    delta_file = loadmat('include/build_synth/deltaFiles/deltaSpatCorrLevels%s.mat' % fileSuffix, squeeze_me=True)
+    delta_file = loadmat('include/build_synth/deltaFiles/deltaMinMaxSpatCorr%s.mat' % fileSuffix, squeeze_me=True)
 
     alphaMin = delta_file['powerMin']
     betaMax = delta_file['powerMax']
