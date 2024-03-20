@@ -1,3 +1,4 @@
+import numpy as np
 from include.load_data import date_choice, load_counts as load
 
 
@@ -34,3 +35,32 @@ def get_real_counts(country, fday, lday, dataBasis):
     return timestampsCropped, ZDataCropped
 
 
+def get_real_counts_by_county(fday, lday, dataBasis, chosenDep='all'):
+    """
+    :param fday:
+    :param lday:
+    :param dataBasis:
+    :param chosenDep: either str 'all', or list of chosen 'départements' ex : [38, 69] of length 'dep'
+    :return: dates ndarray of shape (days + 1, ) of str in format 'YYYY-MM-DD'
+             data  ndarray of shape (dep, days + 1) of float (round numbers)
+    """
+    if dataBasis == 'SPF':
+        timestampsInit, ZDataDepInit, allDeps = load.loadingData_byDep()
+    elif dataBasis == 'hosp':
+        timestampsInit, ZDataDepInit, allDeps = load.loadingData_hospDep()
+    else:
+        DataBasisUnknown = ValueError("Data Basis %s unknown." % dataBasis)
+        raise DataBasisUnknown
+
+    # Cropping following dates (time cropping)
+    timestampsCropped, ZDataDepCropped = date_choice.cropDatesPlusOne(fday, lday, timestampsInit, ZDataDepInit)
+
+    deps = np.array(allDeps[:96])  # spatial cropping to remove DROM-COM
+
+    # Cropping following spatial sorting
+    if chosenDep == 'all':
+        print("Selecting following areas : %s" % deps)
+        return timestampsCropped, ZDataDepCropped[:96], deps
+    else:
+        print("Selecting following areas : %s" % deps[chosenDep])
+        return timestampsCropped, ZDataDepCropped[chosenDep], deps[chosenDep]

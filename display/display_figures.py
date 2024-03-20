@@ -1,3 +1,4 @@
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
@@ -206,6 +207,113 @@ def display_dataBuilt(datesBuilt, dataBuilt, RTrue, OTrue, displayO=False,
     ax.set_xticklabels([])
 
     # ax.set_title(method)
+    if savefig:
+        fig.savefig(savePath)
+    fig.show()
+    return fig, ax, formattedDates
+
+
+def display_REstim2D(dates, data, REstimate, counties, OEstimate=None, RTrue=None,
+                     dataUnder=False, savefig=False, savePath=None, title='', colors=None):
+    """
+    :param dates: ndarray of shape (days, ) for str in format 'YYYY-MM-DD'
+    :param data:
+    :param REstimate:
+    :param counties:
+    :param OEstimate:
+    :param RTrue:
+    :param dataUnder:
+    :param savefig:
+    :param savePath:
+    :param title: str
+    :param colors: dictionary
+    :return:
+    """
+    depts, days = np.shape(data)
+    assert(len(counties) == depts)
+
+    formattedDates = [mdates.datestr2num(t) for t in dates]
+    if dataUnder:
+        fig, axes = plt.subplots(nrows=2, ncols=1, figsize=(19.5, 12))
+        fig.tight_layout(pad=7.5)
+        fig.subplots_adjust(hspace=0.3, right=0.99, bottom=0.05, top=0.95)
+        axR = axes[0]
+        ax = axes[1]
+    else:
+        fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(19.5, 9.5))
+        fig.tight_layout(pad=5)
+        axR = ax
+
+    plt.ticklabel_format(axis="both", style="sci", scilimits=(0, 0))
+
+    # Displaying (or not) data used for following estimation ---
+    if dataUnder:
+        for d in range(depts):
+            data_dep = data[d]
+            ax.plot(formattedDates, data_dep, label='$\mathsf{Z}^{\mathsf{%s}}$' % counties[d])
+
+            if OEstimate is not None:
+                ax.plot(formattedDates, data_dep - OEstimate[d],
+                        label='$\mathsf{Z}^{\mathsf{denoised}} %s$' % counties[d])
+        ax.legend(loc='upper left')
+        ax.set(ylabel='New cases $\mathsf{Z}_t$')
+
+    else:
+        if OEstimate is not None:
+            NoDisplayData = ValueError("Cannot display estimated outliers if no data displayed." +
+                                       " Please set dataUnder = True")
+            raise NoDisplayData
+
+    # Displaying R estimation(s) ---
+    for d in range(depts):
+        REstimate_dep = REstimate[d]
+        axR.plot(formattedDates, REstimate_dep, label='$\mathsf{R}^{\mathsf{%s}}$' % counties[d])
+        axR.legend(loc='upper left')
+
+    # Displaying ground truth RTrue (if available) ---
+    if RTrue is not None:
+        for d in range(depts):
+            RTrue_dep = RTrue[d]
+            if len(RTrue_dep) != len(data):
+                assert (len(RTrue_dep) > len(data))
+                RTrueCropped = RTrue_dep[len(RTrue_dep) - len(data):]
+            else:
+                RTrueCropped = RTrue_dep
+            axR.plot(formattedDates, RTrueCropped, linestyle='dashed', label='$\mathsf{R}^{\mathrm{true}}$')
+
+    axR.set(ylabel='$\mathsf{R}_t$')
+
+    # Formatting xticks ---
+    locator, dateFormatter = format.adaptiveDaysLocator(formattedDates)
+
+    axR.xaxis.set_major_locator(locator)
+    axR.xaxis.set_major_formatter(dateFormatter)
+
+    # Formatting yticks ---
+    yScalarFormatter = format.ScalarFormatterClass(useMathText=True)
+    yScalarFormatter.set_powerlimits((0, 0))
+
+    axR.set_ylim(0, max(np.ceil(np.max(REstimate)), 2))
+    axR.set_yticks(np.arange(0, 2.1, 0.5))
+
+    # Formatting the grid ---
+    axR.grid(which="major", linestyle='-', alpha=0.6)
+    axR.grid(which="minor", linestyle='--', alpha=0.3)
+
+    if dataUnder:
+        # Formatting xticks ---
+        ax.xaxis.set_major_locator(locator)
+        ax.xaxis.set_major_formatter(dateFormatter)
+        # Formatting yticks ---
+        ax.set_ylim(0, format.adaptiveYLimit(data))
+        ax.yaxis.set_major_formatter(yScalarFormatter)
+        # Formatting the grid ---
+        ax.grid(which="major", linestyle='-', alpha=0.6)
+        ax.grid(which="minor", linestyle='--', alpha=0.3)
+        ax.set_xticklabels([])
+
+    fig.suptitle(title, fontsize=35)
+    # Saving figure (or not) ---
     if savefig:
         fig.savefig(savePath)
     fig.show()

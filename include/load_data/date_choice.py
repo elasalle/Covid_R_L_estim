@@ -6,10 +6,11 @@ def cropDatesPlusOne(fday, lday, dates, data):
     Crops the data and associated dates between **the day before fday** and lday.
     :param fday: First date ; must be 'year-month-day' format
     :param lday : Last date ; must be 'year-month-day' format or None
-    :param dates : ndarray of shape (days,) of dates (object=dtype) for len(dates) = days
-    :param data : ndarray of shape (days,) of integers and days == len(data)
-    :return : cropDates: ndarray of shape (daysUpdated,) : dates between fday and lday where daysUpdated <= days
-              cropData : ndarray of shape (daysUpdated,) : associated data for the same period
+    :param dates : ndarray of shape (days,) of dates (object=dtype)
+    :param data : ndarray of shape either (days,) or (dep, days) of integers and len(dates) == len(data)
+    :return : cropDates: ndarray of shape (shortened days, ) : dates between fday and lday (included)
+              cropData : ndarray of shape either (shortened days) or (dep, shortened days) : associated cropped data
+
     """
     if fday is None:
         first = 0
@@ -30,10 +31,12 @@ def cropDatesPlusOne(fday, lday, dates, data):
             last = np.argwhere(dates == lday)
             last = last[0, 0]
     cropDates = dates[first:last + 1]
-    cropData = data[first:last + 1]
+    cropData = data[:, first:last + 1]
     if fday is None:
         print("Warning : due to initialization and no previous infection counts before %s," % dates[0] +
               " data is exactly %d days long, not %d + 1" % (len(cropDates), len(cropDates)))
+    else:
+        assert (cropDates[1] == fday)
+    if lday is not None:
+        assert (cropDates[-1] == lday)
     return cropDates, cropData
-
-

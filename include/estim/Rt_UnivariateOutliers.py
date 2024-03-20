@@ -1,7 +1,7 @@
 import numpy as np
 
 from include.optim_tools import conversion_pymat as pymat
-from include.estim.Rt_Joint_graph import Rt_Jgraph
+from include.optim_tools.Rt_Joint_graph import Rt_Jgraph
 
 
 def Rt_Univariate_Outliers(dates, data, lambdaR=3.5, lambdaO=0.02):
