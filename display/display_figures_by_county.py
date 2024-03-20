@@ -10,6 +10,7 @@ from include.build_synth.compute_spatCorrLevels import compute_spatCorrLevels
 
 
 colorsCounties = ['#66B2FF', '#006400', '#FFA500', '#FF0000', '#333333']
+colorsCountiesDark = ['#0072BD', '#003300', '#994D00', '#990000', '#000000']
 
 plt.rc('text', usetex=True)
 plt.rc('text.latex', preamble=r'\usepackage{amsmath}')
@@ -143,4 +144,131 @@ def display_spatCorr_onR(R_by_county, B_matrix, deltaList):
                 '$\\boldsymbol{\mathsf{R}}^\star(\\boldsymbol{\mathsf{R}}^\dagger ; 0)$')
         ax.set_xlabel('$t$ (days)', labelpad=0, loc='center')
 
+    fig.show()
+
+
+def display_comparison_uni_multi(example, spatCorrLevel, RrefInit, R_uni, R_multi):
+    """
+
+    :param example:
+    :param spatCorrLevel:
+    :param RrefInit:
+    :param R_uni:
+    :param R_multi:
+    :return:
+    """
+
+    counties, days = np.shape(R_uni)
+    assert (np.shape(R_multi)[0] == counties)
+    assert (np.shape(R_multi)[1] == days)
+    assert (np.shape(RrefInit)[0] == counties)
+    if np.shape(RrefInit)[1] != days:
+        Rref = RrefInit[:, np.shape(RrefInit)[1] - days:]
+    else:
+        Rref = RrefInit
+
+    REstimates = {'Univariate': R_uni,
+                  'Multivariate': R_multi}
+
+    fig, axes = plt.subplots(figsize=(35, 4.9), ncols=counties)
+    fig.subplots_adjust(wspace=0.02, hspace=0.01, left=0.02, right=0.996, bottom=0.22, top=0.99)
+    plt.ticklabel_format(axis="both", style="sci", scilimits=(0, 0))
+
+    for d in range(counties):
+        ax = axes[d]
+        ax.plot(Rref[d], color=colorsCounties[d], linewidth=5, label='$\\boldsymbol{\mathsf{R}}^\star_%d$' % (d + 1))
+
+        markers_onByDep = np.arange(7, len(REstimates['Univariate'][d]), 15)
+        ax.plot(REstimates['Univariate'][d],
+                label='$\widehat{\\boldsymbol{\mathsf{R}}}^\mathsf{U}_%d$' % (d + 1),
+                color=colorsCounties[d], marker='x', markersize=15, markeredgewidth=4, markevery=markers_onByDep)
+
+        markers_on = np.arange(0, len(REstimates['Multivariate'][d]), 15)
+
+        ax.plot(REstimates['Multivariate'][d],
+                label='$\widehat{\\boldsymbol{\mathsf{R}}}^\mathsf{M}_%d$' % (d + 1),
+                color=colorsCountiesDark[d], marker='o', markersize=13, markeredgewidth=1, markevery=markers_on)
+
+        plt.ticklabel_format(style='plain')
+
+        ymax = 1.75
+        ax.set_ylim(0.25, ymax + 0.01)
+        ax.set_yticks(np.arange(0.5, ymax, 0.5))
+        ax.grid()
+
+        ax.legend(loc=(0.001, 0.01), fontsize=35)
+
+        if d != 0:
+            labelsY = [item.get_text() for item in ax.get_yticklabels()]
+            ax.set_yticklabels([''] * len(labelsY))
+        else:
+            if spatCorrLevel == '0':
+                ax.set_ylabel('$\widehat{\\boldsymbol{\mathsf{R}}},\,\delta = %s$' % spatCorrLevel)
+            else:
+                ax.set_ylabel('$\widehat{\\boldsymbol{\mathsf{R}}},\,\delta_\mathtt{%s}$' % spatCorrLevel)
+
+        ax.set_xlabel('$t$ (days)', labelpad=-1, loc='center')
+    # fig.suptitle('Univariate/multivariate estimators for %s connectivity structure' % example)
+    fig.show()
+
+
+def display_comparison_error_uni_multi(example, spatCorrLevel, RrefInit, R_uni, R_multi):
+    """
+
+    :param example:
+    :param spatCorrLevel:
+    :param RrefInit:
+    :param R_uni:
+    :param R_multi:
+    :return:
+    """
+    counties, days = np.shape(R_uni)
+    assert (np.shape(R_multi)[0] == counties)
+    assert (np.shape(R_multi)[1] == days)
+    assert (np.shape(RrefInit)[0] == counties)
+    if np.shape(RrefInit)[1] != days:
+        Rref = RrefInit[:, np.shape(RrefInit)[1] - days:]
+    else:
+        Rref = RrefInit
+
+    REstimates = {'Univariate': R_uni,
+                  'Multivariate': R_multi}
+
+    fig, axes = plt.subplots(figsize=(35, 4.9), ncols=counties)
+    fig.subplots_adjust(wspace=0.02, hspace=0.01, left=0.02, right=0.996, bottom=0.22, top=0.99)
+    plt.ticklabel_format(axis="both", style="sci", scilimits=(0, 0))
+
+    for d in range(counties):
+        ax = axes[d]
+        markers_onByDep = np.arange(7, len(REstimates['Univariate'][d]), 15)
+        ax.plot(np.abs(REstimates['Univariate'][d] - Rref[d]),
+                label='$|\widehat{\\boldsymbol{\mathsf{R}}}^\mathsf{U}_%d ' % (d + 1) +
+                      '- \\boldsymbol{\mathsf{R}}^\star_%d|$' % (d + 1),
+                color=colorsCounties[d], marker='x', markersize=15, markeredgewidth=4, markevery=markers_onByDep)
+        markers_on = np.arange(0, len(REstimates['Multivariate'][d]), 15)
+        ax.plot(np.abs(REstimates['Multivariate'][d] - Rref[d]),
+                label='$|\widehat{\\boldsymbol{\mathsf{R}}}^\mathsf{M}_%d ' % (d + 1) +
+                      '- \\boldsymbol{\mathsf{R}}^\star_%d|$' % (d + 1),
+                color=colorsCountiesDark[d], marker='o', markersize=13, markeredgewidth=1, markevery=markers_on)
+
+        plt.ticklabel_format(style='plain')
+
+        ax.set_ylim(-0.01, 0.31)
+        ax.set_yticks(np.array([0, 0.1, 0.2, 0.3]))
+        ax.grid()
+
+        ax.legend(loc=(0.001, 0.475), fontsize=35)
+
+        if d != 0:
+            labelsY = [item.get_text() for item in ax.get_yticklabels()]
+            ax.set_yticklabels([''] * len(labelsY))
+        else:
+            if spatCorrLevel == '0':
+                ax.set_ylabel('$\widehat{\\boldsymbol{\mathsf{R}}},\,\delta = %s$' % spatCorrLevel)
+            else:
+                ax.set_ylabel('$\widehat{\\boldsymbol{\mathsf{R}}},\,\delta_\mathtt{%s}$' % spatCorrLevel)
+
+        ax.set_xlabel('$t$ (days)', labelpad=-1, loc='center')
+
+    # fig.suptitle('Error to $\\boldsymbol{\mathsf{R}}^\star$ for %s connectivity structure' % example)
     fig.show()

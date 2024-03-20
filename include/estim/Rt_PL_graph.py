@@ -15,7 +15,7 @@ def Rt_PL_graph(dates, data, B_matrix, muR=50, muS=0.005):
     - mu R sets piecewise linearity of Rt
     - mu S sets spatial regularity of Rt on the chosen graph which transposed incidence matrix is 'B_matrix'.
     :param dates : ndarray of shape (days, )
-    :param data : ndarray of shape (days, )
+    :param data : ndarray of shape (counties, days)
     :param B_matrix: ndarray of shape (|E|, counties) : operator matrix for the Graph Total Variations where E are the
     edges of the associated graph. Also corresponds to the transposed incidence matrix
     :param muR: regularization parameter for piecewise linearity of Rt
@@ -32,12 +32,12 @@ def Rt_PL_graph(dates, data, B_matrix, muR=50, muS=0.005):
     data[data < 0] = 0
 
     # Normalize each counts for each vertex
-    depts, days = np.shape(data)
-    ZDataDep = np.zeros((depts, days - 1))
-    ZDataNorm = np.zeros((depts, days - 1))
-    ZPhiNorm = np.zeros((depts, days - 1))
+    counties, days = np.shape(data)
+    ZDataDep = np.zeros((counties, days - 1))
+    ZDataNorm = np.zeros((counties, days - 1))
+    ZPhiNorm = np.zeros((counties, days - 1))
     datesUpdated = dates[1:]
-    for d in range(depts):
+    for d in range(counties):
         tmpDates, ZDataDep[d], ZPhiDep = crafting_phi.buildZPhi(dates, data[d], Phi)
         # Asserting dates are cropped from first day
         assert (len(tmpDates) == len(datesUpdated))  # == days - 1
@@ -56,11 +56,7 @@ def Rt_PL_graph(dates, data, B_matrix, muR=50, muS=0.005):
     choice.iter = 7 * choice.nbiterprint
     choice.incr = 'R'
 
-    print("Computing Penalized Log-likelihood + Graph (PLG) ...")
-    start_time = time.time()
     REstimate, crit, gap, op_out = cp4g.CP_covid_4_graph(ZDataNorm, muR, muS, ZPhiNorm, B_matrix, choice)
-    executionTime = time.time() - start_time
-    print("Done in %.4f seconds ---" % executionTime)
 
     return REstimate, datesUpdated, ZDataDep
 

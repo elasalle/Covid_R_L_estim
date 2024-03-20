@@ -16,8 +16,8 @@ def set_choice(choice):
 
     if not (hasattr(choice, "prec")): choice.prec = 10 ** (-6)
     if not (hasattr(choice, "nbInf")): choice.nbInf = 10 ** 7
-    if not (hasattr(choice, "iter")): choice.iter = 10 ** 6
-    if not (hasattr(choice, "nbiterprint")): choice.nbiterprint = 10 ** 5
+    if not (hasattr(choice, "iter")): choice.iter = 10 ** 7
+    if not (hasattr(choice, "nbiterprint")): choice.nbiterprint = 10 ** 6
     return
 
 

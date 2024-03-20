@@ -100,6 +100,7 @@ def CP_covid_4_graph(data, muR, muS, alpha, B_matrix, choice):
         return np.array([opL.opL(R, paramL), muS * np.dot(B_matrix, R)], dtype=object)
 
     op.direct = direct_covid_4_graph
+
     def adjoint_covid_4_graph(opEstimates):
         laplacianR = opEstimates[0]  # named according to the expected shape of these arrays
         GTVR = opEstimates[1]
@@ -110,7 +111,6 @@ def CP_covid_4_graph(data, muR, muS, alpha, B_matrix, choice):
         return res
 
     op.adjoint = adjoint_covid_4_graph
-    # op.adjoint = lambda x_: opLadj.opLadj(x_, paramL, filter_def, computation)
 
     param.normL = muR ** 2 + (muS * np.linalg.norm(B_matrix, ord=2)) ** 2  # operator norm
     x, crit, gap = cppdm.PD_ChambollePock_primal_BP(data, param, op, prox, objective)
@@ -119,7 +119,7 @@ def CP_covid_4_graph(data, muR, muS, alpha, B_matrix, choice):
     op_out = mat2py.struct()
     paramL.lambd = 1
     op_out.direct = lambda x_: np.array([opL.opL(x_, paramL), np.dot(B_matrix, x_)], dtype=object)
-    op_out.adjoint = lambda x_: opLadj.opLadj(x_[0], paramL, filter_def, computation) +\
+    op_out.adjoint = lambda x_: opLadj.opLadj(x_[0], paramL, filter_def, computation) + \
                                 muS * np.dot(np.transpose(B_matrix), x_[1])
 
     return x, crit, gap, op_out

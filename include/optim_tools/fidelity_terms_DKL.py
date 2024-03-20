@@ -3,7 +3,7 @@ import numpy as np
 
 def DKL_no_outlier(X, Y, alpha):
     """
-    Used in CP_covid_4.py file.
+    Used in CP_covid_4_graph.py file.
     :param X: ndarray with shape (1, days), should be estimated R
     :param Y: ndarray with shape (1, days), should be data
     :param alpha: ndarray with shape (days,), should be the convolution between data and Phi (infectiousness)

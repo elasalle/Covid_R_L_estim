@@ -57,8 +57,8 @@ def Rt_Jgraph(dates, data, B_matrix=np.ones((1, 1)), lambdaR=3.5, lambdaO=0.02, 
     choice = pymat.struct()
     choice.prior = 'laplacian'  # or 'gradient'
     choice.dataterm = 'DKL'  # or 'L2'
-    choice.nbiterprint = 10000
-    choice.iter = 100000
+    choice.nbiterprint = 10 ** 5
+    choice.iter = 7 * choice.nbiterprint
     choice.nbInf = 7 * choice.nbiterprint
     choice.prec = 10**(-6)
     choice.incr = 'R'
@@ -70,7 +70,9 @@ def Rt_Jgraph(dates, data, B_matrix=np.ones((1, 1)), lambdaR=3.5, lambdaO=0.02, 
     executionTime = time.time() - start_time
     print("Done in %.4f seconds ---" % executionTime)
     REstimate = xx[0]
-    OEstimate = xx[1]
+    OEstimate = np.zeros(np.shape(xx[1]))
+    for d in range(depG):
+        OEstimate[d] = xx[1][d] * np.std(ZDataDep[d])
 
     return REstimate, OEstimate, datesUpdated, ZDataDep
 
