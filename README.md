@@ -38,10 +38,11 @@ The different methods used are:
 
 * `Cori`: Bayesian Estimator [1]
 
-* `U`: Variational estimator for Univariate with temporal regularization [2]
-* `M` : Variational estimator for Multivariate with temporal regularization
-* `U-O`:
-* `M-O`: Variational estimator with temporal and space regularization, with misreported counts `O` explicit 
+* `U`: Univariate variational estimator with temporal regularization [2]
+* `M` : Multivariate variational estimator with temporal and **space regularization** regularization [2]
+* `U-O`: Univariate variational estimator with temporal regularization with misreported counts `O` explicit 
+modelisation [3]
+* `M-O`: Variational estimator with temporal and **space regularization**, with misreported counts `O` explicit 
 modelisation [3]
 
 Code for these methods are to be found in subdirectory `include/estim/`.
