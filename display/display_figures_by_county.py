@@ -140,7 +140,7 @@ def display_spatCorr_onR(R_by_county, B_matrix, deltaList):
                 % deltaNames[i])
         else:
             ax.set_title(
-                '$\\boldsymbol{\mathsf{R}}^\star(\\boldsymbol{\mathsf{R}}^\dagger ; \delta = 0$')
+                '$\\boldsymbol{\mathsf{R}}^\star(\\boldsymbol{\mathsf{R}}^\dagger ; 0)$')
         ax.set_xlabel('$t$ (days)', labelpad=0, loc='center')
 
     fig.show()

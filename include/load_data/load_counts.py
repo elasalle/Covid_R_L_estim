@@ -14,7 +14,6 @@ def loadingData_byDay():
     :return: timestamps: ndarray of str format 'year-month-day' (dates)
              confirmed : ndarray of integers (daily new infections in France)
     """
-    # webdata = pd.read_csv('https://www.data.gouv.fr/fr/datasets/r/4e8d826a-d2a1-4d69-9ed0-b18a1f3d5ce2', sep=';')
     webdata = pd.read_csv('data/Real-world/SiDEP-France-by-day-2023-06-30-16h26.csv', sep=';')
     # Dates
     timestamps = webdata['jour'].to_numpy()  # str format 'year-month-day'
@@ -32,7 +31,6 @@ def loadingData_hosp():
     :return: timestamps: ndarray of str format 'year-month-day' (dates)
              confirmed : ndarray of integers (daily new entrances to the hospital in France)
     """
-    # webdata = pd.read_csv('https://www.data.gouv.fr/fr/datasets/r/63352e38-d353-4b54-bfd1-f1b3ee1cabd7', sep=';')
     webdata = pd.read_csv('data/Real-world/SiDEP-France-hosp-2023-03-31-18h01.csv', sep=';')
     # Dates
     days = webdata['jour'].to_numpy()  # str format 'year-month-day'
@@ -69,9 +67,6 @@ def loadingData_JHU(country):
     :return: timestamps: ndarray of str format 'year-month-day' (dates)
              confirmed : ndarray of integers (daily new infections)
     """
-    # url = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/' + \
-    #       'csse_covid_19_time_series/JHU-worldwide-covid19-daily-new-infections.csv'
-    # webdata = pd.read_csv(url)
     webdata = pd.read_csv('data/Real-world/JHU-worldwide-covid19-daily-new-infections.csv')
 
     # Dates start at 5th column of webdata columns names
@@ -108,7 +103,6 @@ def loadingData_hospDep():
              confirmed : ndarray matrix of integers (daily new entrances to the hospital in France) by 'département'
                          of shape (totalDeps, totalDays)
     """
-    # webdata = pd.read_csv('https://www.data.gouv.fr/fr/datasets/r/63352e38-d353-4b54-bfd1-f1b3ee1cabd7', sep=';')
     webdata = pd.read_csv('data/Real-world/SiDEP-France-hosp-2023-03-31-18h01.csv', sep=';')
 
     # Dates
@@ -145,7 +139,6 @@ def loadingData_byDep():
     :return: timestamps: ndarray of str format 'year-month-day' (dates from 2020-05-13)
              confirmed : ndarray matrix of integers (daily new entrances to the hospital in France) by 'département'
     """
-    # webdata = pd.read_csv('https://www.data.gouv.fr/fr/datasets/r/426bab53-e3f5-4c6a-9d54-dba4442b3dbc', sep=';')
     webdata = pd.read_csv('data/Real-world/SiDEP-France-by-day-by-dep-2023-06-30-16h26.csv', sep=';')
     # Total number of days
     days = webdata['jour'].to_numpy()  # str format 'year-month-day'

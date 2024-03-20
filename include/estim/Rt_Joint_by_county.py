@@ -3,7 +3,7 @@ from include.estim.Rt_Joint import Rt_J
 from include.estim.Rt_Joint_graph import Rt_Jgraph
 
 
-def Rt_UO_MO(dates, data, B_matrix=np.ones((1, 1)), lambdaR=3.5, lambdaO=0.02, lambdaS=0.005):
+def Rt_UO_MO(dates, data, B_matrix=np.zeros((1, 1)), lambdaR=3.5, lambdaO=0.02, lambdaS=0.005):
     """
     Computes the spatial and temporal evolution of the reproduction number R and erroneous counts.
     The method used is detailed in optim_tools/CP_covid_5_outlier_graph.py (regularized optimization scheme solved using

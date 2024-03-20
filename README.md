@@ -30,23 +30,24 @@ In this repository, you'll find
 which is a Jupyter notebook that computes univariate estimations of the instantaneous reproduction number given 
 daily new infection counts to be found on [Johns Hopkins University](<https://coronavirus.jhu.edu/map.html>) `JHU` 
 website or [Santé Publique France](<https://www.data.gouv.fr/fr/datasets/donnees-de-laboratoires-pour-le-depistage-a-compter-du-18-05-2022-si-dep/>)
-`SPF`. See `include/load_data/load_counts` for more details.
+`SPF`. See [include/load_data/load_counts](include/load_data/load_counts.py) for more details.
 
 The different methods used are: 
 
-* `MLE` : Maximum Log-likelihood Estimator
+* `MLE`: Maximum Log-likelihood Estimator
 
-* `Cori` : Bayesian Estimator [1]
+* `Cori`: Bayesian Estimator [1]
 
-* `U_M` : Variational estimators (Univariate and Multivariate) with temporal regularization [2]
-
-* `UO_MO` : Variational estimator with temporal and space regularization, with misreported counts `O` explicit 
+* `U`: Variational estimator for Univariate with temporal regularization [2]
+* `M` : Variational estimator for Multivariate with temporal regularization
+* `U-O`:
+* `M-O`: Variational estimator with temporal and space regularization, with misreported counts `O` explicit 
 modelisation [3]
 
 Code for these methods are to be found in subdirectory `include/estim/`.
 
-`U_M` and `UO_MO` are the results of solving optimization schemes using Chambolle-Pock [4] primal dual algorithm,
-re-implemented in `include/optim_tools/`. 
+`U`,`M`, `U-O`and `M-O` are variational estimators formulated as a minimization problems solved using Chambolle-Pock [4]
+primal dual algorithm, customized to the objective functions involved. See implementation in `include/optim_tools/`. 
 
 
 # NEW: Multivariate synthetic infection counts generation
@@ -78,7 +79,7 @@ Generation of synthetic infection counts files from <b> any ground truth </b> ar
 This work is described in [6] and [available on HAL](<https://hal.science/hal-04501967>).
 
 In `data/Synthetic/Multivariate/` you will find two examples of connectivity structure (`Line` and `Hub`) and for each, 
-associated synthetic infection counts generated using five inter-county correlation levels : `delta_0` (no correlation), 
+associated synthetic infection counts generated using five inter-county correlation levels : `delta = 0` (no correlation), 
 `delta_I` (low correlation), `delta_II`,`delta_III`, `delta_IV` (high correlation).
 
 # Comparison between R estimators on synthetic infection counts
@@ -109,7 +110,7 @@ J. Math. Imaging Vis., vol. 40, no. 1, pp. 120–145, 2011.
 
 [5] J. Du, B. Pascal, and P. Abry, “Compared performance of Covid19 reproduction number estimators based on realistic 
 synthetic data,” in GRETSI’23 XXIX`eme Colloque Francophone de Traitement du Signal et des Images, Grenoble, France, 
-Aug. 28 - Sept. 1 2023.
+Aug. 28 - Sept. 1 2023. [⟨hal-04032614⟩](<https://hal.science/hal-04032614v2/document>)
 
 
 [6] J. Du, B. Pascal, P. Abry. "Synthetic Spatiotemporal Covid19 Infection Counts to Assess Graph-Regularized Estimation

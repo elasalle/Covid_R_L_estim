@@ -3,7 +3,7 @@ from include.estim.Rt_PL import Rt_PL
 from include.estim.Rt_PL_graph import Rt_PL_graph
 
 
-def Rt_U_M(dates, data, B_matrix=np.ones((2, 1)), muR=50, muS=0.005):
+def Rt_U_M(dates, data, B_matrix=np.zeros((2, 1)), muR=50, muS=0.005):
     """
     Computes the evolution of the reproduction number R for the chosen country and between dates 'fday' and 'lday'.
     The method used is detailed in optim_tools/CP_covid_4.py (regularized optimization scheme solved using
