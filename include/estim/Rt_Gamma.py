@@ -6,7 +6,7 @@ import numpy as np
 import time
 
 
-def Rt_C(dates, data, tau=settings.tauWindow, display=True):
+def Rt_Gamma(dates, data, tau=settings.tauWindow, display=True):
     """
     Computes the evolution of the reproduction number R for the chosen country and between dates 'fday' and 'lday'
     using Cori's method (C) using a prior assuming that Rt is constant on time periods of length 'tau' days.
