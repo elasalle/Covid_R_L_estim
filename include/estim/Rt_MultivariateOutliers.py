@@ -1,3 +1,4 @@
+import time
 from include.optim_tools.Rt_Joint_graph import Rt_Jgraph
 
 
@@ -22,5 +23,10 @@ def Rt_Multivariate(dates, data, B_matrix, lambdaR=3.5, lambdaO=0.02, lambdaS=0.
              timestamps: ndarray of shape (counties, days -1) representing dates
              ZDataDep: ndarray of shape (counties, days - 1) representing processed data
     """
+    print("Computing Univariate estimator with misreported counts modelisation ...")
+    start_time = time.time()
     REstimate, datesUpdated, ZDataProc = Rt_Jgraph(dates, data, B_matrix, lambdaR, lambdaO, lambdaS)
+    executionTime = time.time() - start_time
+    print("Done in %.4f seconds ---" % executionTime)
+
     return REstimate, datesUpdated, ZDataProc

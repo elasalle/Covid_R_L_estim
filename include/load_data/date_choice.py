@@ -1,17 +1,21 @@
 import numpy as np
 
 
-def cropDatesPlusOne(fday, lday, dates, data):
+def cropDatesPlusOne(fday, lday, dates, dataInit):
     """
     Crops the data and associated dates between **the day before fday** and lday.
     :param fday: First date ; must be 'year-month-day' format
     :param lday : Last date ; must be 'year-month-day' format or None
     :param dates : ndarray of shape (days,) of dates (object=dtype)
-    :param data : ndarray of shape either (days,) or (dep, days) of integers and len(dates) == len(data)
+    :param dataInit : ndarray of shape either (days,) or (dep, days) of integers and len(dates) == len(data)
     :return : cropDates: ndarray of shape (shortened days, ) : dates between fday and lday (included)
               cropData : ndarray of shape either (shortened days) or (dep, shortened days) : associated cropped data
 
     """
+    if len(np.shape(dataInit)) == 1:
+        data = np.reshape(dataInit, (1, len(dataInit)))
+    else:
+        data = dataInit
     if fday is None:
         first = 0
     else:
@@ -39,4 +43,8 @@ def cropDatesPlusOne(fday, lday, dates, data):
         assert (cropDates[1] == fday)
     if lday is not None:
         assert (cropDates[-1] == lday)
-    return cropDates, cropData
+
+    if len(np.shape(dataInit)) == 1:
+        return cropDates, cropData.flatten()
+    else:
+        return cropDates, cropData

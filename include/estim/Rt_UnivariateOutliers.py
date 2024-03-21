@@ -1,3 +1,4 @@
+import time
 import numpy as np
 
 from include.optim_tools import conversion_pymat as pymat
@@ -34,7 +35,13 @@ def Rt_Univariate_Outliers(dates, data, lambdaR=3.5, lambdaO=0.02):
     assert (days == len(dates))
 
     B_matrix = np.zeros((2, counties))
+
+    print("Computing univariate estimation with misreported counts modelisation ...")
+    start_time = time.time()
     REstimate, OEstimate, datesUpdated, dataCrop = Rt_Jgraph(dates, dataProc, B_matrix, lambdaR, lambdaO, lambdaS=0)
+    executionTime = time.time() - start_time
+    print("Done in %.4f seconds ---" % executionTime)
+
     if len(np.shape(data)) == 1:
         assert (np.shape(REstimate)[0] == 1)
         assert (np.shape(REstimate)[1] == days - 1)

@@ -1,4 +1,3 @@
-import time
 import numpy as np
 
 from include.optim_tools import conversion_pymat as pymat
@@ -63,12 +62,8 @@ def Rt_Jgraph(dates, data, B_matrix=np.ones((1, 1)), lambdaR=3.5, lambdaO=0.02, 
     choice.prec = 10**(-6)
     choice.incr = 'R'
 
-    print("Computing Joint estimation + Graph (JG) ...")
-    start_time = time.time()
     xx, crit2, gap, opout = cp5g.CP_covid_5_outlier_graph(ZDataNorm, lambdaR, lambdaS, lambdaO, ZPhiNorm,
                                                           B_matrix, choice)
-    executionTime = time.time() - start_time
-    print("Done in %.4f seconds ---" % executionTime)
     REstimate = xx[0]
     OEstimate = np.zeros(np.shape(xx[1]))
     for d in range(depG):

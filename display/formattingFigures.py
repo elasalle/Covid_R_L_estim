@@ -46,11 +46,11 @@ def adaptiveDaysLocator(formattedDates):
     if days < 35:
         interval = int(np.round(days / 5))
         return mdates.DayLocator(interval=interval), mdates.DateFormatter('%d~%b~%Y')
-    elif 34 < days < 140:
+    elif 34 < days < 111:
         interval = int(np.round(days / 35))
         firstWeek = int(np.ceil(firstDay / 7))
         return mdates.WeekdayLocator(interval=interval, byweekday=firstWeek), mdates.DateFormatter('%d~%b~%Y')
-    elif 139 < days < 550:
+    elif 110 < days < 550:
         interval = int(np.round(days / 140))
         return mdates.MonthLocator(interval=interval, bymonthday=firstDay), mdates.DateFormatter('%b~%Y')
     else:
