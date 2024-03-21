@@ -46,13 +46,13 @@ def display_data(dates, data, title, savefig=False, savePath=None):
 
 
 def display_REstim(dates, data, REstimate, method, OEstimate=None, comparison=False, RTrue=None,
-                   dataUnder=False, savefig=False, savePath=None):
+                   dataDisp=True, savefig=False, savePath=None):
     """
     Display an estimation of R and Outliers estimations.
     :param dates: ndarray of shape (days, ) for str in format 'YYYY-MM-DD'
     :param data: ndarray of shape (days, ) float
     :param REstimate: ndarray of shape (days, ) float
-    :param method: str between 'MLE', 'Cori', 'PL' and 'Joint' method to estimate R.
+    :param method: str between 'MLE', 'Gamma', 'U', and 'U-O' method to estimate R.
     :param OEstimate: (optional) ndarray of shape (days, )
     :param RTrue: (optional) ndarray of shape (days, )
     :param dataDisp: (optional) bool to display used data below on another axis. Can't be used if displaying RTrue
@@ -62,7 +62,7 @@ def display_REstim(dates, data, REstimate, method, OEstimate=None, comparison=Fa
     :return: fig, ax and dates (in matplotlib.dates format)
     """
     formattedDates = [mdates.datestr2num(t) for t in dates]
-    if dataUnder:
+    if dataDisp:
         fig, axes = plt.subplots(nrows=2, ncols=1, figsize=(19.5, 12))
         fig.tight_layout(pad=6.5)
         fig.subplots_adjust(hspace=0.3, right=0.99, bottom=0.05, top=0.95)
@@ -76,13 +76,13 @@ def display_REstim(dates, data, REstimate, method, OEstimate=None, comparison=Fa
     plt.ticklabel_format(axis="both", style="sci", scilimits=(0, 0))
 
     # Displaying (or not) data used for following estimation ---
-    if dataUnder:
+    if dataDisp:
         ax.plot(formattedDates, data, label="$\mathsf{Z}$", color='black')
         if comparison:
-            for m in ['PL', 'Joint']:
+            for m in ['U', 'U-O']:
                 ax.plot(formattedDates, data - OEstimate[m], label='$\mathsf{Z}^{\mathsf{denoised}}$ ($\mathsf{%s}$)' % m,
                         color=format.colors['denoised%s' % m])
-        elif OEstimate is not None and method in ['PL', 'Joint']:
+        elif OEstimate is not None and method in ['U', 'U-O']:
             ax.plot(formattedDates, data - OEstimate, label='$\mathsf{Z}^{\mathsf{denoised}}$ ',
                     color=format.colors['denoised%s' % method])
         ax.legend(loc='upper left')
@@ -129,7 +129,7 @@ def display_REstim(dates, data, REstimate, method, OEstimate=None, comparison=Fa
     axR.grid(which="major", linestyle='-', alpha=0.6)
     axR.grid(which="minor", linestyle='--', alpha=0.3)
 
-    if dataUnder:
+    if dataDisp:
         # Formatting xticks ---
         ax.xaxis.set_major_locator(locator)
         ax.xaxis.set_major_formatter(dateFormatter)

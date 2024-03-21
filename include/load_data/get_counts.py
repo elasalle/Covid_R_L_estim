@@ -1,4 +1,7 @@
 import numpy as np
+from scipy.io import loadmat
+
+from include.optim_tools.transposed_incidence_matrix import transposed_incidence_matrix
 from include.load_data import date_choice, load_counts as load
 
 
@@ -32,17 +35,15 @@ def get_real_counts(country, fday, lday, dataBasis):
     # Crop to dates choice
     timestampsCropped, ZDataCropped = date_choice.cropDatesPlusOne(fday, lday, timestampsInit, ZDataInit)
 
-    return timestampsCropped, ZDataCropped
+    output = {'dates': timestampsCropped}
+    return ZDataCropped, output
 
 
-def get_real_counts_by_county(fday, lday, dataBasis, chosenDep='all'):
+def get_real_counts_by_county(fday, lday, dataBasis):
     """
     :param fday:
     :param lday:
     :param dataBasis:
-    :param chosenDep: either str 'all', or list of chosen 'départements' ex : [38, 69] of length 'dep'
-    :return: dates ndarray of shape (days + 1, ) of str in format 'YYYY-MM-DD'
-             data  ndarray of shape (dep, days + 1) of float (round numbers)
     """
     if dataBasis == 'SPF':
         timestampsInit, ZDataDepInit, allDeps = load.loadingData_byDep()
@@ -57,10 +58,17 @@ def get_real_counts_by_county(fday, lday, dataBasis, chosenDep='all'):
 
     deps = np.array(allDeps[:96])  # spatial cropping to remove DROM-COM
 
-    # Cropping following spatial sorting
-    if chosenDep == 'all':
-        print("Selecting following areas : %s" % deps)
-        return timestampsCropped, ZDataDepCropped[:96], deps
-    else:
-        print("Selecting following areas : %s" % deps[chosenDep])
-        return timestampsCropped, ZDataDepCropped[chosenDep], deps[chosenDep]
+    # Transposed incidence matrix associated
+    fileStructConnect = loadmat('data/Real-world/counties_sharing_borders.mat')
+    structMat = fileStructConnect['matrice']  # french for matrix
+    structMat[-1, -1] = 1  # correction of a mistake : every dep verifies depContMatrix[i, i] = 1
+
+    # Create the G matrix used to define the Graph Total Variation ----------------------------------------------
+    B_matrix = transposed_incidence_matrix(structMat)
+
+    output = {'dates': timestampsCropped,
+              'counties': deps,
+              'structConnect': structMat,
+              'B_matrix': B_matrix}
+    return ZDataDepCropped[:96], output
+

@@ -32,7 +32,7 @@ The different methods used are:
 
 * `MLE`: Maximum Log-likelihood Estimator
 
-* `Cori`: Bayesian Estimator [1]
+* `Gamma`: Bayesian Estimator [1]
 
 * `U`: Univariate variational estimator with temporal regularization [2]
 * `M` : Multivariate variational estimator with temporal and **space regularization** regularization [2]
@@ -58,7 +58,7 @@ infection counts, given ground truth reproduction number and outliers (misreport
 
 Specific examples of ground truth are to be found in `data/Synthetic/Univariate`. 
 
-They are resulting from `UO_MO` joint estimation strategy of reproduction number and outliers using different 
+They are resulting from `U-O` joint estimation strategy of reproduction number and outliers using different 
 hyperparameters tuning more or less slope changes (`lambdaR`) and more or less outliers (`lambdaO`):
 
 * Config I:     more slope changes and less zero-values in outliers 

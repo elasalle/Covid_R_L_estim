@@ -10,12 +10,14 @@ plt.style.use('./display/matlabMatchingStyles.mplstyle')
 
 # Other formatting options ---------------------------------------------------------------------------------------------
 colors = {'MLE': (0.5, 0.5, 0.5, 0.6),
-          'Cori': (0, 128/255, 0),  # 'green'
-          'PL': (0, 0, 1),  # 'blue'
-          'Joint': (1, 0, 0),  # 'red'
+          'Gamma': (0, 128/255, 0),  # 'green'
+          'U': (0, 0, 1),  # 'blue'
+          # 'Multi': (0, 0, 1),  # 'blue'
+          'U-O': (1, 0, 0),  # 'red'
+          # 'MultiOut': (1, 0, 0),  # 'red'
           'synthData': (1, 0.65, 0),
-          'denoisedPL': (70/255, 130/255, 180/255),
-          'denoisedJoint': (139/255, 0, 0)}
+          'denoisedU': (70/255, 130/255, 180/255),
+          'denoisedU-O': (139/255, 0, 0)}
 
 
 class ScalarFormatterClass(ScalarFormatter):
