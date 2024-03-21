@@ -22,15 +22,11 @@ estimators comparison available. </font>
 # Estimation of multivariate reproduction number 
 
 The estimation codes are associated to [1], [2], [3] that present multivariate reproduction number R estimators. 
-In this repository, you'll find 
 
-    demo_estimRealData.ipynb
-
-
-which is a Jupyter notebook that computes univariate estimations of the instantaneous reproduction number given 
+[demo_estimRealData.ipynb](demo_estimRealData.ipynb) is a Jupyter notebook that computes univariate estimations of the instantaneous reproduction number given 
 daily new infection counts to be found on [Johns Hopkins University](<https://coronavirus.jhu.edu/map.html>) `JHU` 
 website or [Santé Publique France](<https://www.data.gouv.fr/fr/datasets/donnees-de-laboratoires-pour-le-depistage-a-compter-du-18-05-2022-si-dep/>)
-`SPF`. See [include/load_data/load_counts](include/load_data/load_counts.py) for more details.
+`SPF`. See [include/load_data/load_counts.py](include/load_data/load_counts.py) for more details.
 
 The different methods used are: 
 
@@ -57,10 +53,7 @@ primal dual algorithm, customized to the objective functions involved. See imple
 This work is described thoroughly in [5] (in french), but also
 [available on HAL](<https://hal.science/hal-04032614v2/document>).
 
-
-    demo_buildSyntheticData.ipynb
-
-is a Jupyter notebook that displays the generation of realistic univariate (for now) synthetic Covid-19 daily new 
+[demo_buildSyntheticData.ipynb](demo_buildSyntheticData.ipynb) is a Jupyter notebook that displays the generation of realistic univariate (for now) synthetic Covid-19 daily new 
 infection counts, given ground truth reproduction number and outliers (misreported counts).
 
 Specific examples of ground truth are to be found in `data/Synthetic/Univariate`. 
@@ -85,9 +78,7 @@ associated synthetic infection counts generated using five inter-county correlat
 
 # Comparison between R estimators on synthetic infection counts
 
-    demo_compareEstimSynthData.ipynb
-
-is a Jupyter notebook that displays comparison of the 4 univariate methods presented earlier on generated univariate 
+[demo_compareEstimSynthData.ipynb](demo_compareEstimSynthData.ipynb) is a Jupyter notebook that displays comparison of the 4 univariate methods presented earlier on generated univariate 
 synthetic infection counts. Soon to be available : multivariate comparison.
 
 SNR, MSE and Jaccard index are used for comparison are described in `include/comparison_tools/`.
