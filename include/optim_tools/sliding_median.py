@@ -11,7 +11,7 @@ def mad(arr):
     return np.median(np.abs(arr - med))  # python version
 
 
-def slidingMAD(data, alpha, nbDaysMed=settings.slidingMADDays):
+def sliding_median(data, alpha, nbDaysMed=settings.slidingMADDays):
     """
     Computes smoothened data with a sliding median using previous function mad.
     For exemple if alpha = 0, for each t, Z^{denoised}_t = MAD(Z_{t-width,..., t+width}).
