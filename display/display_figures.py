@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
 from display import formattingFigures as format
+from include.load_data.load_counts import list_dpt, select_french_county
 
 
 def display_data(dates, data, title, savefig=False, savePath=None):
@@ -80,7 +81,8 @@ def display_REstim(dates, data, REstimate, method, OEstimate=None, comparison=Fa
         ax.plot(formattedDates, data, label="$\mathsf{Z}$", color='black')
         if comparison:
             for m in ['U', 'U-O']:
-                ax.plot(formattedDates, data - OEstimate[m], label='$\mathsf{Z}^{\mathsf{denoised}}$ ($\mathsf{%s}$)' % m,
+                ax.plot(formattedDates, data - OEstimate[m],
+                        label='$\mathsf{Z}^{\mathsf{denoised}}$ ($\mathsf{%s}$)' % m,
                         color=format.colors['denoised%s' % m])
         elif OEstimate is not None and method in ['U', 'U-O']:
             ax.plot(formattedDates, data - OEstimate, label='$\mathsf{Z}^{\mathsf{denoised}}$ ',
@@ -96,10 +98,12 @@ def display_REstim(dates, data, REstimate, method, OEstimate=None, comparison=Fa
     # Displaying R estimation(s) ---
     if comparison:
         for m in method:
-            axR.plot(formattedDates, REstimate[m], label='$\mathsf{R}^{\mathsf{%s}}$' % m, color=format.colors[m])
+            axR.plot(formattedDates, REstimate[m], label='$\\boldsymbol{\mathsf{R}}^{\mathsf{%s}}$' % m,
+                     color=format.colors[m])
         axR.legend(loc='lower left')
     else:
-        axR.plot(formattedDates, REstimate, label='$\mathsf{R}^{\mathsf{%s}}$' % method, color=format.colors[method])
+        axR.plot(formattedDates, REstimate, label='$\\boldsymbol{\mathsf{R}}^{\mathsf{%s}}$' % method,
+                 color=format.colors[method])
         axR.legend(loc='lower left')
 
     # Displaying ground truth RTrue (if available) ---
@@ -109,7 +113,7 @@ def display_REstim(dates, data, REstimate, method, OEstimate=None, comparison=Fa
             RTrueCropped = RTrue[len(RTrue) - len(data):]
         else:
             RTrueCropped = RTrue
-        axR.plot(formattedDates, RTrueCropped, color='black', label='$\mathsf{R}^{\mathrm{true}}$')
+        axR.plot(formattedDates, RTrueCropped, color='black', label='$\\boldsymbol{\mathsf{R}}^{\mathrm{true}}$')
 
     axR.set(ylabel='$\mathsf{R}_t$')
 
@@ -213,8 +217,8 @@ def display_dataBuilt(datesBuilt, dataBuilt, RTrue, OTrue, displayO=False,
     return fig, ax, formattedDates
 
 
-def display_REstim2D(dates, data, REstimate, counties, OEstimate=None, RTrue=None,
-                     dataDisp=False, savefig=False, savePath=None, title='', colors=None):
+def display_REstim_by_county(dates, data, REstimate, counties, OEstimate=None, RTrue=None,
+                             dataDisp=True, savefig=False, savePath=None, title=''):
     """
     :param dates: ndarray of shape (days, ) for str in format 'YYYY-MM-DD'
     :param data: ndarray of shape (nbCounties, days)
@@ -226,7 +230,6 @@ def display_REstim2D(dates, data, REstimate, counties, OEstimate=None, RTrue=Non
     :param savefig: (optional) bool
     :param savePath: (optional) str (path), None by default
     :param title: str (optional) str
-    :param colors: dictionary with counties as keys ; None by default
     :return:
     """
     nbCounties, days = np.shape(data)
@@ -250,7 +253,7 @@ def display_REstim2D(dates, data, REstimate, counties, OEstimate=None, RTrue=Non
     if dataDisp:
         for d in range(nbCounties):
             data_dep = data[d]
-            ax.plot(formattedDates, data_dep, label='$\\boldsymbol{\mathsf{Z}}_{\mathsf{%s}}$' % counties[d])
+            ax.plot(formattedDates, data_dep, label=counties[d])
 
             if OEstimate is not None:
                 ax.plot(formattedDates, data_dep - OEstimate[d],
@@ -264,16 +267,6 @@ def display_REstim2D(dates, data, REstimate, counties, OEstimate=None, RTrue=Non
                                        " Please set dataDisp = True")
             raise NoDisplayData
 
-    # Displaying R estimation(s) ---
-    for d in range(nbCounties):
-        REstimate_dep = REstimate[d]
-        if RTrue is not None:
-            axR.plot(formattedDates, REstimate_dep, label='$\\boldsymbol{\mathsf{R}}_{\mathsf{%s}}$' % counties[d],
-                     marker='o', markersize=13, markeredgewidth=1)
-        else:
-            axR.plot(formattedDates, REstimate_dep, label='$\\boldsymbol{\mathsf{R}}_{\mathsf{%s}}$' % counties[d])
-        axR.legend(loc='lower left')
-
     # Displaying ground truth RTrue (if available) ---
     if RTrue is not None:
         for d in range(nbCounties):
@@ -283,7 +276,17 @@ def display_REstim2D(dates, data, REstimate, counties, OEstimate=None, RTrue=Non
                 RTrueCropped = RTrue_dep[len(RTrue_dep) - len(data):]
             else:
                 RTrueCropped = RTrue_dep
-            axR.plot(formattedDates, RTrueCropped, label='$\\boldsymbol{\mathsf{R}}_{\mathrm{true}}$', alpha=0.75)
+            axR.plot(formattedDates, RTrueCropped, label='$\\boldsymbol{\mathsf{R}}^\star_{\mathsf{%s}}$' % counties[d],
+                     alpha=0.75)
+    # Displaying R estimation(s) ---
+    for d in range(nbCounties):
+        REstimate_dep = REstimate[d]
+        if RTrue is not None:
+            axR.plot(formattedDates, REstimate_dep, label=counties[d],
+                     marker='o', markersize=13, markeredgewidth=1)
+        else:
+            axR.plot(formattedDates, REstimate_dep, label=counties[d])
+        axR.legend(loc='lower left')
 
     axR.set(ylabel='$\mathsf{R}$')
 
@@ -322,3 +325,92 @@ def display_REstim2D(dates, data, REstimate, counties, OEstimate=None, RTrue=Non
         fig.savefig(savePath)
     fig.show()
     return fig, ax, formattedDates
+
+
+def display_REstim_by_dpt(dates, data, REstimate, chosenDpt, dataDisp=True, savefig=False, savePath=None, title=''):
+    """
+    :param dates: ndarray of shape (days, ) for str in format 'YYYY-MM-DD'
+    :param data: ndarray of shape (nbCounties, days)
+    :param REstimate: ndarray of shape (nbCounties, days)
+    :param chosenDpt: list of str ; names of counties to be displayed
+    :param dataDisp: (optional) bool
+    :param savefig: (optional) bool
+    :param savePath: (optional) str (path), None by default
+    :param title: str (optional) str
+    :return:
+    """
+    nbCounties, days = np.shape(data)
+    assert(nbCounties == len(list_dpt))
+
+    nbDpts = len(chosenDpt)
+    dataChosen = select_french_county(data, chosenDpt)
+    REstimateChosen = select_french_county(REstimate, chosenDpt)
+
+    counties = select_french_county(np.array(list_dpt), chosenDpt)
+    formattedDates = [mdates.datestr2num(t) for t in dates]
+    if dataDisp:
+        fig, axes = plt.subplots(nrows=2, ncols=1, figsize=(19.5, 12))
+        fig.tight_layout(pad=7.5)
+        fig.subplots_adjust(hspace=0.1, right=0.99, bottom=0.05, top=0.95)
+        ax = axes[0]
+        axR = axes[1]
+    else:
+        fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(19.5, 9.5))
+        fig.tight_layout(pad=5)
+        axR = ax
+
+    plt.ticklabel_format(axis="both", style="sci", scilimits=(0, 0))
+
+    # Displaying (or not) data used for following estimation ---
+    if dataDisp:
+        for d in range(nbDpts):
+            data_dep = dataChosen[d]
+            ax.plot(formattedDates, data_dep, label=counties[d])
+
+        ax.legend(loc='upper left')
+        ax.set(ylabel='New counts $\mathsf{Z}$')
+
+    # Displaying R estimation(s) ---
+    for d in range(nbDpts):
+        REstimate_dep = REstimateChosen[d]
+        axR.plot(formattedDates, REstimate_dep, label=counties[d])
+        axR.legend(loc='lower left')
+
+    axR.set(ylabel='$\mathsf{R}$')
+
+    # Formatting xticks ---
+    locator, dateFormatter = format.adaptiveDaysLocator(formattedDates)
+
+    axR.xaxis.set_major_locator(locator)
+    axR.xaxis.set_major_formatter(dateFormatter)
+
+    # Formatting yticks ---
+    yScalarFormatter = format.ScalarFormatterClass(useMathText=True)
+    yScalarFormatter.set_powerlimits((0, 0))
+
+    axR.set_ylim(0, max(np.round(np.max(REstimateChosen) * 5) / 5 + 0.1, 2.1))
+    axR.set_yticks(np.arange(0, max(np.round(np.max(REstimateChosen) * 5) / 5, 2), 0.5))
+
+    # Formatting the grid ---
+    axR.grid(which="major", linestyle='-', alpha=0.6)
+    axR.grid(which="minor", linestyle='--', alpha=0.3)
+
+    if dataDisp:
+        # Formatting xticks ---
+        ax.xaxis.set_major_locator(locator)
+        ax.xaxis.set_major_formatter(dateFormatter)
+        # Formatting yticks ---
+        ax.set_ylim(0, format.adaptiveYLimit(dataChosen))
+        ax.yaxis.set_major_formatter(yScalarFormatter)
+        # Formatting the grid ---
+        ax.grid(which="major", linestyle='-', alpha=0.6)
+        ax.grid(which="minor", linestyle='--', alpha=0.3)
+        ax.set_xticklabels([])
+
+    fig.suptitle(title, fontsize=35)
+    # Saving figure (or not) ---
+    if savefig:
+        fig.savefig(savePath)
+    fig.show()
+    return fig, ax, formattedDates
+
