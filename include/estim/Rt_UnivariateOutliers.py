@@ -36,7 +36,7 @@ def Rt_Univariate_Outliers(dates, data, lambdaR=3.5, lambdaO=0.02):
 
     B_matrix = np.zeros((2, counties))
 
-    print("Computing univariate estimation with misreported counts modelisation ...")
+    print("Computing Univariate estimation with O misreported counts modelisation ...")
     start_time = time.time()
     REstimate, OEstimate, datesUpdated, dataCrop = Rt_Jgraph(dates, dataProc, B_matrix, lambdaR, lambdaO, lambdaS=0)
     executionTime = time.time() - start_time
@@ -45,5 +45,10 @@ def Rt_Univariate_Outliers(dates, data, lambdaR=3.5, lambdaO=0.02):
     if len(np.shape(data)) == 1:
         assert (np.shape(REstimate)[0] == 1)
         assert (np.shape(REstimate)[1] == days - 1)
-        return pymat.matvec2pyvec(REstimate), pymat.matvec2pyvec(OEstimate), datesUpdated, pymat.matvec2pyvec(dataCrop)
-    return REstimate, OEstimate, datesUpdated, dataCrop
+        output = {'dates': datesUpdated,
+                  'data': pymat.matvec2pyvec(dataCrop)}
+        return pymat.matvec2pyvec(REstimate), pymat.matvec2pyvec(OEstimate), output
+
+    output = {'dates': datesUpdated,
+              'data': dataCrop}
+    return REstimate, OEstimate, output

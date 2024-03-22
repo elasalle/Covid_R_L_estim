@@ -8,8 +8,8 @@ import time
 
 def Rt_Gamma(dates, data, tau=settings.tauWindow, display=True):
     """
-    Computes the evolution of the reproduction number R for the chosen country and between dates 'fday' and 'lday'
-    using Cori's method (C) using a prior assuming that Rt is constant on time periods of length 'tau' days.
+    Computes a Bayesian estimator (R_Gamma) of the reproduction number R for the chosen country and between dates 'fday'
+    and 'lday' using a prior assuming that Rt is constant on time windows of length 'tau' days.
     :param dates ndarray of shape (days, )
     :param data ndarray of shape (days, )
     :param tau : (optional) integer, number of days for which prior distribution is supposed piecewise constant

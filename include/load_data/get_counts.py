@@ -39,7 +39,7 @@ def get_real_counts(country, fday, lday, dataBasis):
     return ZDataCropped, output
 
 
-def get_real_counts_by_county(fday, lday, dataBasis):
+def get_real_counts_by_county(fday, lday, dataBasis='SPF'):
     """
     :param fday:
     :param lday:
