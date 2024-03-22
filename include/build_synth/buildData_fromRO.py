@@ -81,10 +81,12 @@ def buildData_anyRO(R, Outliers, firstCases, firstDay='2020-01-23', threshold=se
         realR[k] = R[k-1] * np.sum(fZ * PhiNormalized[1:])  # 1st value of Phi is always 0 : we don't need data on day 0
         ZData[k] = np.random.poisson(max(realR[k] + OutliersRescaled[k-1], threshold))
 
-    return randomDates(firstDay, len(ZData[1:])), ZData[1:]  # cropped from the initialization with 'real' firstCases
+    options = {'dates': randomDates(firstDay, len(ZData[1:])),
+               'data': ZData[1:]}  # cropped from the initialization with 'real' firstCases
+    return ZData[1:], options
 
 
-def buildDataMulti_anyRO(R, Outliers, firstCases, firstDay='2020-01-23', threshold=settings.thresholdPoisson):
+def buildDataMulti_anyRO(R, Outliers, firstCases, B_matrix, firstDay='2020-01-23', threshold=settings.thresholdPoisson):
     """
     Build data Z drawn from Poisson distribution with mean (R * Phi Z + Out) with the given firstCases (1 day)
     :param R: ndarray of shape (deps, days)
@@ -99,5 +101,9 @@ def buildDataMulti_anyRO(R, Outliers, firstCases, firstDay='2020-01-23', thresho
     ZData = np.zeros((deps, days))
 
     for d in range(deps):
-        datesBuilt, ZData[d] = buildData_anyRO(R[d], Outliers[d], firstCases[d], firstDay=firstDay, threshold=threshold)
-    return randomDates(firstDay, len(ZData[0])), ZData  # cropped from the initialization with 'real' firstCases
+        ZData[d], options = buildData_anyRO(R[d], Outliers[d], firstCases[d], firstDay=firstDay, threshold=threshold)
+
+    options_M = {'dates': randomDates(firstDay, len(ZData[0])),
+                 'data': ZData,
+                 'B_matrix': B_matrix}
+    return ZData, options_M

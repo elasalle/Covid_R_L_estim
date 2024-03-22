@@ -6,22 +6,29 @@ from display import formattingFigures as format
 from include.load_data.load_counts import list_dpt, select_french_county
 
 
-def display_data(dates, data, title, savefig=False, savePath=None):
+def display_data(data, options, savefig=False, savePath=None):
     """
     Display daily new infections data and associated dates and given title.
-    :param dates: ndarray of shape (days, ) for str in format 'YYYY-MM-DD'
     :param data: ndarray of shape (days, ) float of daily new infections
-    :param title: str title
+    :param options: dictionary containing:
+           - dates: ndarray of shape (days, ) for str in format 'YYYY-MM-DD'
     :param savefig: (optional) bool for saving figure or not
     :param savePath: (optional) if savefig is True, precise the path where the figure is saved.
     :return: fig, ax and dates (in matplotlib.dates format)
     """
+    dataBasis = options['dataBasis']
+    country = options['country']
+    firstDay = options['fday']
+    lastDay = options['lday']
+    dates = options['dates']
+
     formattedDates = [mdates.datestr2num(t) for t in dates]
     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(19.5, 9.5))
     fig.tight_layout(pad=5.0)
     plt.ticklabel_format(axis="both", style="sci", scilimits=(0, 0))
 
     ax.plot(formattedDates, data, label="$\mathsf{Z}_t$", color='black')
+    title = "Daily new cases %s for %s, between %s and %s" % (dataBasis, country, firstDay, lastDay)
     ax.set(title=title, ylabel='New cases $\mathsf{Z}_t$')
 
     # Formatting the grid
@@ -46,15 +53,15 @@ def display_data(dates, data, title, savefig=False, savePath=None):
     return fig, ax, formattedDates
 
 
-def display_REstim(dates, data, REstimate, method, OEstimate=None, comparison=False, RTrue=None,
+def display_REstim(REstimate, options=None, comparison=False, RTrue=None,
                    dataDisp=True, savefig=False, savePath=None):
     """
     Display an estimation of R and Outliers estimations.
-    :param dates: ndarray of shape (days, ) for str in format 'YYYY-MM-DD'
-    :param data: ndarray of shape (days, ) float
     :param REstimate: ndarray of shape (days, ) float
-    :param method: str between 'MLE', 'Gamma', 'U', and 'U-O' method to estimate R.
-    :param OEstimate: (optional) ndarray of shape (days, )
+    :param options: dictionary containing
+        - dates: ndarray of shape (days, ) for str in format 'YYYY-MM-DD'
+        - data: ndarray of shape (days, ) float
+        - method: str between 'MLE', 'Gamma', 'U', and 'U-O' method to estimate R.
     :param RTrue: (optional) ndarray of shape (days, )
     :param dataDisp: (optional) bool to display used data below on another axis. Can't be used if displaying RTrue
     :param comparison: (optional) bool to display multiple R estimations. method shoud be a list indexing REstimate.
@@ -62,7 +69,22 @@ def display_REstim(dates, data, REstimate, method, OEstimate=None, comparison=Fa
     :param savePath: (optional) if savefig is True, precise the path where the figure is saved.
     :return: fig, ax and dates (in matplotlib.dates format)
     """
+    if comparison:
+        method = list(options.keys())
+        dates = options[method[-1]]['dates']
+        data = options[method[-1]]['data']
+        OEstimate = {'U': options['U']['OEstim'], 'U-O': options['U-O']['OEstim']}
+    else:
+        dates = options['dates']
+        data = options['data']
+        method = options['method']
+        if 'OEstim' in list(options.keys()):
+            OEstimate = options['OEstim']
+        else:
+            OEstimate = None
+
     formattedDates = [mdates.datestr2num(t) for t in dates]
+
     if dataDisp:
         fig, axes = plt.subplots(nrows=2, ncols=1, figsize=(19.5, 12))
         fig.tight_layout(pad=6.5)
@@ -78,14 +100,14 @@ def display_REstim(dates, data, REstimate, method, OEstimate=None, comparison=Fa
 
     # Displaying (or not) data used for following estimation ---
     if dataDisp:
-        ax.plot(formattedDates, data, label="$\mathsf{Z}$", color='black')
+        ax.plot(formattedDates, data, label="$\\boldsymbol{\mathsf{Z}}$", color='black')
         if comparison:
             for m in ['U', 'U-O']:
                 ax.plot(formattedDates, data - OEstimate[m],
-                        label='$\mathsf{Z}^{\mathsf{denoised}}$ ($\mathsf{%s}$)' % m,
+                        label='$\\boldsymbol{\mathsf{Z}}^{\mathsf{denoised}}$ ($\mathsf{%s}$)' % m,
                         color=format.colors['denoised%s' % m])
         elif OEstimate is not None and method in ['U', 'U-O']:
-            ax.plot(formattedDates, data - OEstimate, label='$\mathsf{Z}^{\mathsf{denoised}}$ ',
+            ax.plot(formattedDates, data - OEstimate, label='$\\boldsymbol{\mathsf{Z}}^{\mathsf{denoised}}$ ',
                     color=format.colors['denoised%s' % method])
         ax.legend(loc='upper left')
         ax.set(ylabel='New counts $\mathsf{Z}_t$')
@@ -152,19 +174,21 @@ def display_REstim(dates, data, REstimate, method, OEstimate=None, comparison=Fa
     return fig, ax, formattedDates
 
 
-def display_dataBuilt(datesBuilt, dataBuilt, RTrue, OTrue, displayO=False,
+def display_dataBuilt(dataBuilt, RTrue, OTrue, options=None, displayO=False,
                       savefig=False, savePath=''):
     """
     Display the generated daily new cases (dataBuilt) compared to the ground truth (RTrue, OTrue) used to do so.
-    :param datesBuilt: ndarray of shape (days, ) for str in format 'YYYY-MM-DD'
     :param dataBuilt: ndarray of shape (days, )
     :param RTrue: ndarray of shape (days, )
     :param OTrue: ndarray of shape (days, )
+    :param options: dictionary containing at least
+            - datesBuilt: ndarray of shape (days, ) for str in format 'YYYY-MM-DD'
     :param displayO: (optional) bool for displaying OTrue or not
     :param savefig: (optional) bool for saving figure or not
     :param savePath: (optional) if savefig is True, precise the path where the figure is saved.
     :return: fig, ax and dates (in matplotlib.dates format)
     """
+    datesBuilt = options['dates']
     formattedDates = [mdates.datestr2num(t) for t in datesBuilt]
     fig, axes = plt.subplots(nrows=2, ncols=1, figsize=(19.5, 12))
     fig.tight_layout(pad=7.5)
@@ -327,10 +351,11 @@ def display_REstim_by_county(dates, data, REstimate, counties, OEstimate=None, R
     return fig, ax, formattedDates
 
 
-def display_REstim_by_dpt(dates, data, REstimate, chosenDpt, dataDisp=True, savefig=False, savePath=None, title=''):
+def display_REstim_by_dpt(REstimate, chosenDpt, options=None, dataDisp=True, savefig=False, savePath=None, title=''):
     """
-    :param dates: ndarray of shape (days, ) for str in format 'YYYY-MM-DD'
-    :param data: ndarray of shape (nbCounties, days)
+    :param options: dictionary containing at least:
+            - dates: ndarray of shape (days, ) for str in format 'YYYY-MM-DD'
+            - data: ndarray of shape (nbCounties, days)
     :param REstimate: ndarray of shape (nbCounties, days)
     :param chosenDpt: list of str ; names of counties to be displayed
     :param dataDisp: (optional) bool
@@ -339,6 +364,8 @@ def display_REstim_by_dpt(dates, data, REstimate, chosenDpt, dataDisp=True, save
     :param title: str (optional) str
     :return:
     """
+    dates = options['dates']
+    data = options['data']
     nbCounties, days = np.shape(data)
     assert(nbCounties == len(list_dpt))
 

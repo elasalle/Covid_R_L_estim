@@ -5,7 +5,7 @@ from include.optim_tools import conversion_pymat as pymat
 from include.optim_tools.Rt_Joint_graph import Rt_Jgraph
 
 
-def Rt_Univariate_Outliers(dates, data, lambdaR=3.5, lambdaO=0.02):
+def Rt_U_O(data, lambdaR=3.5, lambdaO=0.02, options=None):
     """
     Computes the spatial and temporal evolution of the reproduction number R and erroneous counts.
     Can be used for time series.
@@ -14,14 +14,16 @@ def Rt_Univariate_Outliers(dates, data, lambdaR=3.5, lambdaO=0.02):
      Hyperparameters choice has to be as followed :
     - lambda R sets piecewise linearity of Rt
     - lambda O sets sparsity of the outliers Ot
-    :param dates ndarray of shape (days, )
     :param data ndarray of shape (counties, days) or (days, )
     :param lambdaR: regularization parameter for piecewise linearity of Rt
     :param lambdaO: regularization parameters for sparsity of O
+    :param options: dictionary containing at least
+            - dates ndarray of shape (days, )
     :return: REstimate: ndarray of shape (counties, days - 1), daily estimation of Rt
              datesUpdated: ndarray of shape (counties, days -1) representing dates
              dataCrop: ndarray of shape (counties, days - 1) representing processed data
     """
+    dates = options['dates']
     if len(np.shape(data)) == 1:
         days = len(data)
         counties = 1
@@ -46,9 +48,13 @@ def Rt_Univariate_Outliers(dates, data, lambdaR=3.5, lambdaO=0.02):
         assert (np.shape(REstimate)[0] == 1)
         assert (np.shape(REstimate)[1] == days - 1)
         output = {'dates': datesUpdated,
-                  'data': pymat.matvec2pyvec(dataCrop)}
+                  'data': pymat.matvec2pyvec(dataCrop),
+                  'method': 'U-O',
+                  'OEstim': pymat.matvec2pyvec(OEstimate)}
         return pymat.matvec2pyvec(REstimate), pymat.matvec2pyvec(OEstimate), output
 
-    output = {'dates': datesUpdated,
-              'data': dataCrop}
-    return REstimate, OEstimate, output
+    options_UO = {'dates': datesUpdated,
+                  'data': dataCrop,
+                  'method': 'U-O',
+                  'OEstim': OEstimate}
+    return REstimate, OEstimate, options_UO

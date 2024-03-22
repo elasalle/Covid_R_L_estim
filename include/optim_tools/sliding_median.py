@@ -42,4 +42,5 @@ def sliding_median(data, alpha, nbDaysMed=settings.slidingMADDays):
             dataMed[k] = dataWindowedMedian
         else:
             dataMed[k] = data[k]
+
     return dataMed

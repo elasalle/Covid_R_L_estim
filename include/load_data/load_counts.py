@@ -201,6 +201,3 @@ list_dpt = ['Ain', 'Aisne', 'Allier', 'Alpes-de-Haute-Provence', 'Hautes-Alpes',
             'Tarn', 'Tarn-et-Garonne', 'Var', 'Vaucluse', 'Vendée',
             'Vienne', 'Haute-Vienne', 'Vosges', 'Yonne', 'Territoire de Belfort',
             'Essonne', 'Hauts-de-Seine', 'Seine-Saint-Denis', 'Val-de-Marne', 'Val-d\'Oise']
-
-# print(codeIndexes_dpt())
-# print(list_dpt)

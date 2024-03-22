@@ -4,19 +4,21 @@ from include.optim_tools import conversion_pymat as pymat
 from include.optim_tools.Rt_PL_graph import Rt_PL_graph
 
 
-def Rt_Univariate(dates, data, muR=50):
+def Rt_U(data, muR=50, options=None):
     """
     Computes the spatial and temporal evolution of the reproduction number R.
     The method used is detailed in optim_tools/CP_covid_4_graph.py (time regularized optimization scheme solved using
     Chambolle-Pock algorithm), with muS = 0 and no underlying connectivity structure. Can be used for time series.
     (optional) One can choose the regularization parameter muR that sets the penalization for piecewise linearity of Rt
-    :param dates ndarray of shape (days, )
     :param data ndarray of shape (counties, days) or (days,)
+    :param options: dictionary containing at least
+            - dates ndarray of shape (days, )
     :param muR: regularization parameter for piecewise linearity of Rt
     :return: REstimate: ndarray of shape (counties, days - 1), daily estimation of Rt
              datesUpdated: ndarray of shape (counties, days -1) representing dates
              dataCrop: ndarray of shape (counties, days - 1) representing processed data
     """
+    dates = options['dates']
     if len(np.shape(data)) == 1:
         days = len(data)
         counties = 1
@@ -38,5 +40,13 @@ def Rt_Univariate(dates, data, muR=50):
     if len(np.shape(data)) == 1:
         assert (np.shape(REstimate)[0] == 1)
         assert (np.shape(REstimate)[1] == days - 1)
-        return pymat.matvec2pyvec(REstimate), datesUpdated, pymat.matvec2pyvec(dataCrop)
-    return REstimate, datesUpdated, dataCrop
+        options_U = {'dates': datesUpdated,
+                     'data': options['data'][1:],
+                     'OEstim': options['data'][1:] - pymat.matvec2pyvec(dataCrop),
+                     'method': 'U'}
+        return pymat.matvec2pyvec(REstimate), options_U
+
+    options_U = {'dates': datesUpdated,
+                 'data': options['data'][:, 1:],
+                 'method': 'U'}
+    return REstimate, options_U

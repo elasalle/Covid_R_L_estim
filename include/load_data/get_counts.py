@@ -35,8 +35,13 @@ def get_real_counts(country, fday, lday, dataBasis):
     # Crop to dates choice
     timestampsCropped, ZDataCropped = date_choice.cropDatesPlusOne(fday, lday, timestampsInit, ZDataInit)
 
-    output = {'dates': timestampsCropped}
-    return ZDataCropped, output
+    options = {'dates': timestampsCropped,
+               'data': ZDataCropped,
+               'country': country,
+               'fday': fday,
+               'lday': lday,
+               'dataBasis': dataBasis}
+    return ZDataCropped, options
 
 
 def get_real_counts_by_county(fday, lday, dataBasis='SPF'):
