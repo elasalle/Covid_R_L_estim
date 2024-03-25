@@ -11,7 +11,11 @@ def SignaltoNoiseRatio(groundTruth, estimation):
     """
     normOrder = 2
     assert (len(groundTruth) == len(estimation))
-    SquaredError = np.sum(np.abs(estimation - groundTruth) ** normOrder)
+    errorMean = (np.sum(np.abs(estimation[1:] - groundTruth[1:])) / (len(groundTruth) - 1))
+    if (estimation[0] - groundTruth[0]) / errorMean > 100000:
+        SquaredError = np.sum(np.abs(estimation[1:] - groundTruth[1:]) ** normOrder)
+    else:
+        SquaredError = np.sum(np.abs(estimation - groundTruth) ** normOrder)
     return 10 * np.log10(np.sum(np.abs(groundTruth) ** normOrder) / SquaredError)
 
 

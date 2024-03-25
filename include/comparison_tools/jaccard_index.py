@@ -37,14 +37,20 @@ def JaccardIndexSignal(X, winGauss=winGaussRef, sigmaGauss=sigmaGaussRef):
     return Intersection / Union, Intersection, Union
 
 
-def JaccardIndexREstim(R1true, R2true):
+def JaccardIndexREstim(R1_init, R2_init):
     """
     Computes the Jaccard index (in %) between two R estimates slope changes of same length.
     More precisely, computes the Jaccard index between discrete laplacian operators associated to each time serie.
-    :param R1true: ndarray of shape (len(R1),) or (deps, days)
-    :param R2true: ndarray of shape (len(R2),) where len(R2) = len(R1) or (deps, days)
+    :param R1_init: ndarray of shape (len(R1),) or (deps, days)
+    :param R2_init: ndarray of shape (len(R2),) where len(R2) = len(R1) or (deps, days)
     :return: float : Jaccard index
     """
+    if np.abs(R1_init[0] - R2_init[0]) > 500 * np.abs(R1_init[1] - R2_init[1]):
+        R1true = R1_init[1:]
+        R2true = R2_init[1:]
+    else:
+        R1true = R1_init
+        R2true = R2_init
 
     if len(np.shape(R1true)) == 1:
         R1 = np.reshape(R1true, (1, len(R1true)))

@@ -102,15 +102,22 @@ def display_REstim(REstimate, options=None, comparison=False, RTrue=None,
     if dataDisp:
         ax.plot(formattedDates, data, label="$\\boldsymbol{\mathsf{Z}}$", color='black')
         if comparison:
-            for m in ['U', 'U-O']:
-                ax.plot(formattedDates, data - OEstimate[m],
-                        label='$\\boldsymbol{\mathsf{Z}}^{\mathsf{denoised}}$ ($\mathsf{%s}$)' % m,
-                        color=format.colors['denoised%s' % m])
-        elif OEstimate is not None and method in ['U', 'U-O']:
-            ax.plot(formattedDates, data - OEstimate, label='$\\boldsymbol{\mathsf{Z}}^{\mathsf{denoised}}$ ',
-                    color=format.colors['denoised%s' % method])
+            ax.plot(formattedDates, data - OEstimate['U'],
+                    label='$\\boldsymbol{\mathsf{Z}}^{(\\alpha)}$ ($\mathsf{U}$)',
+                    color=format.colors['denoisedU'])
+            ax.plot(formattedDates, data - OEstimate['U-O'],
+                    label='$\\boldsymbol{\mathsf{Z}} - \\boldsymbol{\mathsf{O}}$ ($\mathsf{U-O}$)',
+                    color=format.colors['denoisedU-O'])
+        elif OEstimate is not None:
+            if method == 'U':
+                ax.plot(formattedDates, data - OEstimate, label='$\\boldsymbol{\mathsf{Z}}^{(\\alpha)}$',
+                        color=format.colors['denoised%s' % method])
+            elif method == 'U-O':
+                ax.plot(formattedDates, data - OEstimate, label='$\\boldsymbol{\mathsf{Z}} - \\boldsymbol{\mathsf{O}}$',
+                        color=format.colors['denoised%s' % method])
+
         ax.legend(loc='upper left')
-        ax.set(ylabel='New counts $\mathsf{Z}_t$')
+        # ax.set(ylabel='$\mathsf{Z}_t$')
     else:
         if OEstimate is not None:
             NoDisplayData = ValueError("Cannot display estimated outliers if no data displayed." +
@@ -120,12 +127,20 @@ def display_REstim(REstimate, options=None, comparison=False, RTrue=None,
     # Displaying R estimation(s) ---
     if comparison:
         for m in method:
-            axR.plot(formattedDates, REstimate[m], label='$\\boldsymbol{\mathsf{R}}^{\mathsf{%s}}$' % m,
-                     color=format.colors[m])
+            if m == 'Gamma':
+                axR.plot(formattedDates, REstimate[m], label='$\widehat{\\boldsymbol{\mathsf{R}}}^{\Gamma}$',
+                         color=format.colors[m])
+            else:
+                axR.plot(formattedDates, REstimate[m], label='$\widehat{\\boldsymbol{\mathsf{R}}}^{\mathsf{%s}}$' % m,
+                         color=format.colors[m])
         axR.legend(loc='lower left')
     else:
-        axR.plot(formattedDates, REstimate, label='$\\boldsymbol{\mathsf{R}}^{\mathsf{%s}}$' % method,
-                 color=format.colors[method])
+        if method == 'Gamma':
+            axR.plot(formattedDates, REstimate, label='$\widehat{\\boldsymbol{\mathsf{R}}}^{\Gamma}$',
+                     color=format.colors[method])
+        else:
+            axR.plot(formattedDates, REstimate, label='$\widehat{\\boldsymbol{\mathsf{R}}}^{\mathsf{%s}}$' % method,
+                     color=format.colors[method])
         axR.legend(loc='lower left')
 
     # Displaying ground truth RTrue (if available) ---
@@ -135,9 +150,9 @@ def display_REstim(REstimate, options=None, comparison=False, RTrue=None,
             RTrueCropped = RTrue[len(RTrue) - len(data):]
         else:
             RTrueCropped = RTrue
-        axR.plot(formattedDates, RTrueCropped, color='black', label='$\\boldsymbol{\mathsf{R}}^{\mathrm{true}}$')
+        axR.plot(formattedDates, RTrueCropped, color='black', label='$\\boldsymbol{\mathsf{R}}^\star}$')
 
-    axR.set(ylabel='$\mathsf{R}_t$')
+    # axR.set(ylabel='$\mathsf{R}_t$')
 
     # Formatting xticks ---
     locator, dateFormatter = format.adaptiveDaysLocator(formattedDates)
@@ -197,16 +212,15 @@ def display_dataBuilt(dataBuilt, RTrue, OTrue, options=None, displayO=False,
 
     axR = axes[0]
 
-    axR.plot(formattedDates, RTrue, color='black', label='$\mathsf{R}^{\mathrm{true}}$')
-    axR.set(ylabel='$\mathsf{R}_t$')
+    axR.plot(formattedDates, RTrue, color='black', label='$\mathsf{R}^\star$')
+    # axR.set(ylabel='$\mathsf{R}_t$')
     axR.legend(loc='lower left')
 
     ax = axes[1]
-    ax.plot(formattedDates, dataBuilt, label="$\mathsf{Z}$", color=format.colors['synthData'])
+    ax.plot(formattedDates, dataBuilt, label="$\mathsf{Z}$ crafted", color=format.colors['synthData'])
     if displayO:
         ax.plot(formattedDates, dataBuilt - OTrue, label="$\mathsf{Z} - \mathsf{O}$", color='black')
     ax.legend(loc='upper left')
-    ax.set(ylabel='New counts $\mathsf{Z}_t$')
 
     # Formatting xticks
     locator, dateFormatter = format.adaptiveDaysLocator(formattedDates)
