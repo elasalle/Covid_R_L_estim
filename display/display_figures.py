@@ -29,7 +29,7 @@ def display_data(data, options, savefig=False, savePath=None):
 
     ax.plot(formattedDates, data, label="$\mathsf{Z}_t$", color='black')
     title = "Daily new cases %s for %s, between %s and %s" % (dataBasis, country, firstDay, lastDay)
-    ax.set(title=title, ylabel='New cases $\mathsf{Z}_t$')
+    ax.set(title=title)  # , ylabel='New cases $\mathsf{Z}_t$')
 
     # Formatting the grid
     ax.grid(which="major", linestyle='-', alpha=0.6)

@@ -5,11 +5,14 @@ estimators, applied to Covid-19. Synthetic realistic univariate and multivariate
 tools for estimators quantitative comparison are available.
 - ---
 
-**Author**: [Juliana Du](<https://juliana-du.github.io/>)
+**Authors**: [Juliana Du](<https://juliana-du.github.io/>) (1), Barbara Pascal (2), Patrice Abry (1)
 
-**Affiliation**: ENSL, CNRS, Laboratoire de physique
+**Affiliations**: 
+(1) CNRS, ENS de Lyon Laboratoire de physique F-69007 Lyon, France
 
-**Funding**: Work supported by ANR-23-CE48-0009 “OptiMoCSI”. J. Du's PhD is funded by CNRS 80PRIME-2021 «CoMoDécartes» 
+(2) Nantes Université, École Centrale Nantes, CNRS, LS2N, UMR 6004 F-44000 Nantes, France
+
+**Fundings**: Work supported by [ANR-23-CE48-0009 “OptiMoCSI”](<https://optimocsi.cnrs.fr>). J. Du's PhD is funded by CNRS 80PRIME-2021 «CoMoDécartes» 
 project
 
 **Created in**: June 2023, <b><i> updated in March 2024 </b> </i>
