@@ -33,13 +33,14 @@ def display_connect_structure(example):
     fig.show()
 
 
-def display_spatCorrLevels(R_by_county, B_matrix, fileSuffix='Last'):
+def display_spatCorrLevels(R_by_county, options=None, fileSuffix='Last'):
     """
     Displays the evolution of the spatial regularization term when considering large logarithmic scale of delta.
     :param R_by_county:
-    :param B_matrix:
+    :param options: dictionary containing at least 'B_matrix'
     :param fileSuffix: (optional) str
     """
+    B_matrix = options['B_matrix']
 
     nbDeps, days = np.shape(R_by_county)
 
@@ -63,7 +64,12 @@ def display_spatCorrLevels(R_by_county, B_matrix, fileSuffix='Last'):
         # Spatial regularization term (coordinate-wise norm 2)
         spatialRegNorml2[k] = np.sum(np.abs(np.dot(B_matrix, RDiff[k])) ** 2)
 
-    delta_I, delta_II, delta_III, delta_IV = compute_spatCorrLevels(R_by_county, B_matrix, fileSuffix=fileSuffix)
+    optionsDelta = compute_spatCorrLevels(R_by_county, options, fileSuffix=fileSuffix)
+
+    delta_I = optionsDelta['I']
+    delta_II = optionsDelta['II']
+    delta_III = optionsDelta['III']
+    delta_IV = optionsDelta['IV']
 
     lineStyleCorrLevels = {'0': 'solid',
                            'I': 'solid',
@@ -95,17 +101,18 @@ def display_spatCorrLevels(R_by_county, B_matrix, fileSuffix='Last'):
     fig.show()
 
 
-def display_spatCorr_onR(R_by_county, B_matrix, deltaList):
+def display_spatCorr_onR(R_by_county, options=None):
     """
-
     :param R_by_county:
-    :param B_matrix:
-    :param deltaList: dict
+    :param options: dictionary containing at least
+        - B_matrix: ndarray of shape ([E|, |V|) transposed incidence matrix of the associated connectivity structure,
+        represented by a graph G = (V, E) where each node is a territory/county.
+        - '0', 'I', 'II', 'III', 'IV' corresponding to inter-county regularization levels.
     :return:
     """
-
-    deltaNames = list(deltaList.keys())
-    deltaValues = list(deltaList.values())
+    deltaList = options
+    deltaNames = list(deltaList.keys())[1:]
+    deltaValues = list(deltaList.values())[1:]
     assert (len(deltaNames) == len(deltaValues))
     nbDelta = len(deltaValues)
     nbDeps, days = np.shape(R_by_county)
@@ -119,7 +126,7 @@ def display_spatCorr_onR(R_by_county, B_matrix, deltaList):
 
         delta = deltaValues[i]
         print('Computing diffusion with deltaS = %.2f ----' % delta)
-        RDiff = Tikhonov_spat_corr(R_by_county, B_matrix, delta)
+        RDiff = Tikhonov_spat_corr(R_by_county, options['B_matrix'], delta)
 
         for d in range(nbDeps):
             ax.plot(np.arange(len(RDiff[d])), RDiff[d], label=str(d + 1), color=colorsCounties[d])

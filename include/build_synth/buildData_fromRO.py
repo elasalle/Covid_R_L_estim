@@ -86,17 +86,23 @@ def buildData_anyRO(R, Outliers, firstCases, firstDay='2020-01-23', threshold=se
     return ZData[1:], options
 
 
-def buildDataMulti_anyRO(R, Outliers, firstCases, B_matrix, firstDay='2020-01-23', threshold=settings.thresholdPoisson):
+def buildDataMulti_anyRO(R, Outliers, options=None, firstDay='2020-01-23', threshold=settings.thresholdPoisson):
     """
-    Build data Z drawn from Poisson distribution with mean (R * Phi Z + Out) with the given firstCases (1 day)
+    Build data Z drawn from Poisson distribution with mean (R * Phi Z + Out) with the given firstCases for one day,
+    by county.
     :param R: ndarray of shape (deps, days)
-    :param firstCases : ndarray of shape (deps,) indicating number of cases of the original data, only used for init.
+    :param options: dictionary containing at least:
+        - B_matrix: ndarray of shape ([E|, |V|) transposed incidence matrix of the associated connectivity structure,
+    represented by a graph G = (V, E) where each node corresponds to a territory/county.
+        - firstCases: ndarray of shape (deps,) indicating number of cases of the original data, only used for init.
     :param Outliers: ndarray of shape (deps, days)
     :param firstDay: (optional) str in format 'YYYY-MM-DD' to indicate first day of random dates drawn
     :param threshold: (optional) inferior limit for Poisson parameter : float
     :return datesBuilt: list of str in format 'YYYY-MM-DD' random dates associated with ZDataBuilt
             ZDataBuilt: ndarray of shape (days, ) built following Cori's epidemiological model
     """
+    firstCases = options['firstCases']
+
     deps, days = np.shape(R)
     ZData = np.zeros((deps, days))
 
@@ -105,5 +111,5 @@ def buildDataMulti_anyRO(R, Outliers, firstCases, B_matrix, firstDay='2020-01-23
 
     options_M = {'dates': randomDates(firstDay, len(ZData[0])),
                  'data': ZData,
-                 'B_matrix': B_matrix}
+                 'B_matrix': options['B_matrix']}
     return ZData, options_M

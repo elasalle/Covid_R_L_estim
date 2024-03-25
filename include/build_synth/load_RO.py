@@ -30,4 +30,6 @@ def loadROconfigMulti(example, configuration):
     else:
         assert (inputData['deltaName'] == '\delta_\mathtt{%s}' % configuration)
 
-    return inputData['Rref'], inputData['OutliersRef'], inputData['firstCases'], inputData['B_matrix']
+    optionsMulti = {'firstCases': inputData['firstCases'],
+                    'B_matrix': inputData['B_matrix']}
+    return inputData['Rref'], inputData['OutliersRef'], optionsMulti

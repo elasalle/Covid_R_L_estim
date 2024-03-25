@@ -27,10 +27,10 @@ def Rt_M(data, muR=50, muS=0.005, options=None):
 
     if 'counties' in list(options.keys()):
         options_M = {'dates': datesUpdated,
-                     'data': 'ZDataProc',
+                     'data': ZDataProc,
                      'counties': options['counties']}
     else:
         options_M = {'dates': datesUpdated,
-                     'data': 'ZDataProc',
+                     'data': ZDataProc,
                      'counties': [str(i) for i in range(np.shape(data)[0])]}
     return REstimate, options_M
