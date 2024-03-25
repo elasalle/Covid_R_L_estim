@@ -107,7 +107,7 @@ def buildDataMulti_anyRO(R, Outliers, options=None, firstDay='2020-01-23', thres
     ZData = np.zeros((deps, days))
 
     for d in range(deps):
-        ZData[d], options = buildData_anyRO(R[d], Outliers[d], firstCases[d], firstDay=firstDay, threshold=threshold)
+        ZData[d], optionsTmp = buildData_anyRO(R[d], Outliers[d], firstCases[d], firstDay=firstDay, threshold=threshold)
 
     options_M = {'dates': randomDates(firstDay, len(ZData[0])),
                  'data': ZData,

@@ -241,13 +241,14 @@ def display_dataBuilt(dataBuilt, RTrue, OTrue, options=None, displayO=False,
     return fig, ax, formattedDates
 
 
-def display_REstim_by_county(dates, data, REstimate, counties, OEstimate=None, RTrue=None,
+def display_REstim_by_county(data, REstimate, options=None, OEstimate=None, RTrue=None,
                              dataDisp=True, savefig=False, savePath=None, title=''):
     """
-    :param dates: ndarray of shape (days, ) for str in format 'YYYY-MM-DD'
     :param data: ndarray of shape (nbCounties, days)
     :param REstimate: ndarray of shape (nbCounties, days)
-    :param counties: list of str ; names of counties to be displayed
+    :param options: dictionary containing at least
+        - datesBuilt: ndarray of shape (days, ) for str in format 'YYYY-MM-DD'
+        - counties: list of str ; names of counties to be displayed
     :param OEstimate: (optional) ndarray of shape (nbCounties, days)
     :param RTrue: (optional) ndarray of shape (nbCounties, days)
     :param dataDisp: (optional) bool
@@ -257,8 +258,13 @@ def display_REstim_by_county(dates, data, REstimate, counties, OEstimate=None, R
     :return:
     """
     nbCounties, days = np.shape(data)
-    assert(len(counties) == nbCounties)
+    if 'counties' in list(options.keys()):
+        counties = options['counties']
+        assert (len(counties) == nbCounties)
+    else:
+        counties = [str(i) for i in range(1, nbCounties + 1)]
 
+    dates = options['dates']
     formattedDates = [mdates.datestr2num(t) for t in dates]
     if dataDisp:
         fig, axes = plt.subplots(nrows=2, ncols=1, figsize=(19.5, 12))
@@ -283,7 +289,7 @@ def display_REstim_by_county(dates, data, REstimate, counties, OEstimate=None, R
                 ax.plot(formattedDates, data_dep - OEstimate[d],
                         label='$\\boldsymbol{\mathsf{Z}}^{\mathsf{denoised}}_{\mathsf{%s}}$' % counties[d])
         ax.legend(loc='upper left')
-        ax.set(ylabel='New counts $\mathsf{Z}$')
+        ax.set(ylabel='$\mathsf{Z}_t$')
 
     else:
         if OEstimate is not None:
@@ -312,7 +318,7 @@ def display_REstim_by_county(dates, data, REstimate, counties, OEstimate=None, R
             axR.plot(formattedDates, REstimate_dep, label=counties[d])
         axR.legend(loc='lower left')
 
-    axR.set(ylabel='$\mathsf{R}$')
+    axR.set(ylabel='$\mathsf{R}_t$')
 
     # Formatting xticks ---
     locator, dateFormatter = format.adaptiveDaysLocator(formattedDates)
@@ -353,11 +359,11 @@ def display_REstim_by_county(dates, data, REstimate, counties, OEstimate=None, R
 
 def display_REstim_by_dpt(REstimate, chosenDpt, options=None, dataDisp=True, savefig=False, savePath=None, title=''):
     """
-    :param options: dictionary containing at least:
-            - dates: ndarray of shape (days, ) for str in format 'YYYY-MM-DD'
-            - data: ndarray of shape (nbCounties, days)
     :param REstimate: ndarray of shape (nbCounties, days)
     :param chosenDpt: list of str ; names of counties to be displayed
+    :param options: dictionary containing at least:
+        - dates: ndarray of shape (days, ) for str in format 'YYYY-MM-DD'
+        - data: ndarray of shape (nbCounties, days)
     :param dataDisp: (optional) bool
     :param savefig: (optional) bool
     :param savePath: (optional) str (path), None by default
@@ -395,7 +401,7 @@ def display_REstim_by_dpt(REstimate, chosenDpt, options=None, dataDisp=True, sav
             ax.plot(formattedDates, data_dep, label=counties[d])
 
         ax.legend(loc='upper left')
-        ax.set(ylabel='New counts $\mathsf{Z}$')
+        ax.set(ylabel='$\mathsf{Z}_t$')
 
     # Displaying R estimation(s) ---
     for d in range(nbDpts):
@@ -403,7 +409,7 @@ def display_REstim_by_dpt(REstimate, chosenDpt, options=None, dataDisp=True, sav
         axR.plot(formattedDates, REstimate_dep, label=counties[d])
         axR.legend(loc='lower left')
 
-    axR.set(ylabel='$\mathsf{R}$')
+    axR.set(ylabel='$\mathsf{R}_t$')
 
     # Formatting xticks ---
     locator, dateFormatter = format.adaptiveDaysLocator(formattedDates)
