@@ -109,21 +109,21 @@ Notes:
 [1] A. Cori, N. Ferguson, C. Fraser, and S. Cauchemez, “A new framework and software to estimate time-varying 
 reproduction numbers during epidemics,” Am. J. Epidemiol., vol. 178, no. 9, pp. 1505–1512, 2013.
 
-[2] [P. Abry, N. Pustelnik, S. Roux, P. Jensen, P. Flandrin, R. Gribonval, C.-G. Lucas,  ́E. Guichard, P. Borgnat, and
+[2] P. Abry, N. Pustelnik, S. Roux, P. Jensen, P. Flandrin, R. Gribonval, C.-G. Lucas,  ́E. Guichard, P. Borgnat, and
 N. Garnier, “Spatial and temporal regularization to estimate COVID-19 reproduction number R(t): Promoting piecewise 
-smoothness via convex optimization,” PLoS One, vol. 15, no. 8, p. e0237901, 2020.](<https://doi.org/10.1371/journal.pone.0237901 >)
+smoothness via convex optimization,” PLoS One, vol. 15, no. 8, p. e0237901, 2020. [⟨hal-02921836⟩](<https://hal.science/hal-02921836/>)
 
-[3] [B. Pascal, P. Abry, N. Pustelnik, S. Roux, R. Gribonval, and P. Flandrin, “Nonsmooth convex optimization to estimate
+[3] B. Pascal, P. Abry, N. Pustelnik, S. Roux, R. Gribonval, and P. Flandrin, “Nonsmooth convex optimization to estimate
 the Covid-19 reproduction number space-time evolution with robustness against low quality data,” IEEE Trans. Signal 
-Process., vol. 70, pp. 2859–2868, 2022.](<https://ieeexplore.ieee.org/abstract/document/9792465>)
+Process., vol. 70, pp. 2859–2868, 2022. [available on arXiv](<https://arxiv.org/abs/2109.09595>)
 
 [4] A. Chambolle and T. Pock, “A first-order primal-dual algorithm for convex problems with applications to imaging,” 
 J. Math. Imaging Vis., vol. 40, no. 1, pp. 120–145, 2011.
 
-[5] [J. Du, B. Pascal, and P. Abry, “Compared performance of Covid19 reproduction number estimators based on realistic 
+[5] J. Du, B. Pascal, and P. Abry, “Compared performance of Covid19 reproduction number estimators based on realistic 
 synthetic data,” in GRETSI’23 XXIX`eme Colloque Francophone de Traitement du Signal et des Images, Grenoble, France, 
-Aug. 28 - Sept. 1 2023. ⟨hal-04032614⟩](<https://hal.science/hal-04032614v2/document>)
+Aug. 28 - Sept. 1 2023. [⟨hal-04032614⟩](<https://hal.science/hal-04032614v2/document>)
 
 
-[6] [J. Du, B. Pascal, P. Abry. "Synthetic Spatiotemporal Covid19 Infection Counts to Assess Graph-Regularized Estimation
-of Multivariate Reproduction Numbers". 2024. ⟨hal-04501967⟩](<https://hal.science/hal-04501967>)
+[6] J. Du, B. Pascal, P. Abry. "Synthetic Spatiotemporal Covid19 Infection Counts to Assess Graph-Regularized Estimation
+of Multivariate Reproduction Numbers". 2024. [⟨hal-04501967⟩](<https://hal.science/hal-04501967>)
