@@ -215,7 +215,8 @@ def display_comparison_uni_multi(example, spatCorrLevel, RrefInit, R_uni, R_mult
                 ax.set_ylabel('$\widehat{\\boldsymbol{\mathsf{R}}},\,\delta_\mathtt{%s}$' % spatCorrLevel)
 
         ax.set_xlabel('$t$ (days)', labelpad=-1, loc='center')
-    # fig.suptitle('Univariate/multivariate estimators for %s connectivity structure' % example)
+    fig.suptitle('Univariate/multivariate estimators for %s connectivity structure' % example,
+                 size=60, y=1.25)
     fig.show()
 
 
@@ -277,5 +278,6 @@ def display_comparison_error_uni_multi(example, spatCorrLevel, RrefInit, R_uni, 
 
         ax.set_xlabel('$t$ (days)', labelpad=-1, loc='center')
 
-    # fig.suptitle('Error to $\\boldsymbol{\mathsf{R}}^\star$ for %s connectivity structure' % example)
+    fig.suptitle('Error to $\\boldsymbol{\mathsf{R}}^\star$ for %s connectivity structure' % example,
+                 size=60, y=1.25)
     fig.show()

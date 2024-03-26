@@ -1,19 +1,40 @@
 import numpy as np
 
 
-def SignaltoNoiseRatio(groundTruth, estimation):
+def SignaltoNoiseRatio(groundTruth_init, estimation_init):
     """
     Computes the Signal-to-Noise-Ratio (SNR in dB) which stands for the quadratic error between
     the ground truth and estimation.
-    :param groundTruth: ndarray of shape (deps, days) -- or (days,)
-    :param estimation: ndarray of shape (deps, days) -- or (days,)
-    :return: SNR(groundTruth, estimation)
+    :param groundTruth_init: ndarray of shape (deps, days) -- or (days,)
+    :param estimation_init: ndarray of shape (deps, days) -- or (days,)
+    :return: SNR(groundTruth_init, estimation)
     """
     normOrder = 2
-    assert (len(groundTruth) == len(estimation))
-    errorMean = (np.sum(np.abs(estimation[1:] - groundTruth[1:])) / (len(groundTruth) - 1))
-    if (estimation[0] - groundTruth[0]) / errorMean > 100000:
-        SquaredError = np.sum(np.abs(estimation[1:] - groundTruth[1:]) ** normOrder)
+    if len(np.shape(groundTruth_init)) == 1:
+        if len(np.shape(estimation_init)) != 1 or len(groundTruth_init) != len(estimation_init):
+            ShapeError = TypeError("Jaccard index cannot be computed between two arrays of different shapes.")
+            raise ShapeError
+        groundTruth = np.reshape(groundTruth_init, (1, len(groundTruth_init)))
+        estimation = np.reshape(estimation_init, (1, len(estimation_init)))
+        nbCounties = 1
+        days = len(groundTruth_init)
+    else:
+        nbCounties, days = np.shape(groundTruth_init)
+        if nbCounties != np.shape(estimation_init)[0] or days != np.shape(estimation_init)[1]:
+            ShapeError = TypeError("Jaccard index cannot be computed between two arrays of different shapes.")
+            raise ShapeError
+        groundTruth = groundTruth_init
+        estimation = estimation_init
+
+    errorMean = (np.sum(np.abs(estimation[:, 1:] - groundTruth[:, 1:])) / (days - 1))
+    burn_in_correction = False
+    for k in range(nbCounties):
+        if (estimation[k, 0] - groundTruth[k, 0]) / errorMean > 100000:
+            burn_in_correction = True
+            break
+
+    if burn_in_correction:
+        SquaredError = np.sum(np.abs(estimation[:, 1:] - groundTruth[:, 1:]) ** normOrder)
     else:
         SquaredError = np.sum(np.abs(estimation - groundTruth) ** normOrder)
     return 10 * np.log10(np.sum(np.abs(groundTruth) ** normOrder) / SquaredError)

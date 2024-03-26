@@ -13,7 +13,7 @@ def MSE_oneDraw(groundTruth, estimation):
     return np.sum(np.abs(estimation - groundTruth) ** normOrder)
 
 
-def MSEByDep_indic(groundTruth, estimation):
+def MSEByDep(groundTruth, estimation):
     """
     :param estimation: ndarray of shape (nbDeps, days)
     :param groundTruth: ndarray of shape (nbDeps, days)
@@ -30,7 +30,7 @@ def MSEByDep_indic(groundTruth, estimation):
     return indicators  # we should minimize this criteria
 
 
-def MSENormByDep_indic(groundTruth, estimation):
+def MSENormByDep(groundTruth, estimation):
     """
     :param estimation: ndarray of shape (nbDeps, days)
     :param groundTruth: ndarray of shape (nbDeps, days)
@@ -43,10 +43,10 @@ def MSENormByDep_indic(groundTruth, estimation):
     indicators = np.zeros(nbDeps)
     for d in range(nbDeps):
         indicators[d] = MSE_oneDraw(estimation[d], groundTruth[d]) / np.sum(groundTruth[d] ** 2)
-    return indicators * 100  # we should minimize this criteria
+    return indicators
 
 
-def MSEMeanNorm_indic(groundTruth, estimation):
+def MSEMeanNorm(groundTruth, estimation):
     """
     :param estimation: ndarray of shape (nbDeps, days)
     :param groundTruth: ndarray of shape (nbDeps, days)
@@ -56,11 +56,11 @@ def MSEMeanNorm_indic(groundTruth, estimation):
     assert (nbDeps == np.shape(groundTruth)[0])
     assert (days == np.shape(groundTruth)[1])
 
-    indicatorsByDep = MSEByDep_indic(groundTruth, estimation)
+    indicatorsByDep = MSEByDep(groundTruth, estimation)
     assert (len(indicatorsByDep) == nbDeps)
     groundTruthNormByDep = np.sum(groundTruth ** 2, axis=1)
 
     indicators = 1 / nbDeps * np.sum(indicatorsByDep / groundTruthNormByDep)
-    assert ((indicators - 1 / nbDeps * np.sum(MSENormByDep_indic(groundTruth, estimation))) < 10 ** (-16))
+    assert ((indicators - 1 / nbDeps * np.sum(MSENormByDep(groundTruth, estimation))) < 10 ** (-16))
 
-    return indicators * 100  # percentage; we should minimize this criteria
+    return indicators

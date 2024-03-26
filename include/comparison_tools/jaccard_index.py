@@ -45,19 +45,33 @@ def JaccardIndexREstim(R1_init, R2_init):
     :param R2_init: ndarray of shape (len(R2),) where len(R2) = len(R1) or (deps, days)
     :return: float : Jaccard index
     """
-    if np.abs(R1_init[0] - R2_init[0]) > 500 * np.abs(R1_init[1] - R2_init[1]):
-        R1true = R1_init[1:]
-        R2true = R2_init[1:]
+    if len(np.shape(R1_init)) == 1:
+        if len(np.shape(R2_init)) != 1 or len(R1_init) != len(R2_init):
+            ShapeError = TypeError("Jaccard index cannot be computed between two arrays of different shapes.")
+            raise ShapeError
+        R1_reshape = np.reshape(R1_init, (1, len(R1_init)))
+        R2_reshape = np.reshape(R2_init, (1, len(R2_init)))
+        nbCounties = 1
     else:
-        R1true = R1_init
-        R2true = R2_init
+        nbCounties, days = np.shape(R1_init)
+        if nbCounties != np.shape(R2_init)[0] or days != np.shape(R2_init)[1]:
+            ShapeError = TypeError("Jaccard index cannot be computed between two arrays of different shapes.")
+            raise ShapeError
+        R1_reshape = R1_init
+        R2_reshape = R2_init
 
-    if len(np.shape(R1true)) == 1:
-        R1 = np.reshape(R1true, (1, len(R1true)))
-        R2 = np.reshape(R2true, (1, len(R2true)))
+    burn_in_correction = False
+    for k in range(nbCounties):
+        if np.abs(R1_reshape[k, 0] - R2_reshape[k, 0]) > 500 * np.abs(R1_reshape[k, 1] - R2_reshape[k, 1]):
+            burn_in_correction = True
+            break
+
+    if burn_in_correction:
+        R1 = R1_reshape[:, 1:]
+        R2 = R2_reshape[:, 1:]
     else:
-        R1 = R1true
-        R2 = R2true
+        R1 = R1_reshape
+        R2 = R2_reshape
 
     nbDeps, days = np.shape(R1)
     assert (np.shape(R2)[0] == nbDeps)
@@ -78,13 +92,20 @@ def JaccardIndexREstim(R1_init, R2_init):
         D2Rs[k, 1] = np.abs(laplacianR2[k])
         JaccardIndex[k], Intersection[k], Union[k] = JaccardIndexSignal(D2Rs[k])
 
-    if len(np.shape(R1true)) == 1:
+    if len(np.shape(R1_init)) == 1:
         return np.array(JaccardIndex.flatten()) * 100
     else:
         return np.array(JaccardIndex) * 100
 
 
 def JaccardIndexAveraged(groundTruth, estimations):
+    """
+    Computes the Jaccard index (in %) between two R estimates slope changes of same length.
+    More precisely, computes the Jaccard index between discrete laplacian operators associated to each time serie.
+    :param groundTruth: ndarray of shape (len(R1),) or (deps, days)
+    :param estimations: ndarray of shape (len(R2),) where len(R2) = len(R1) or (deps, days)
+    :return: float : Jaccard index
+    """
     nbDeps, days = np.shape(groundTruth)
     assert (np.shape(estimations)[0] == nbDeps)
     assert (np.shape(estimations)[1] == days)
