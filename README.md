@@ -100,7 +100,10 @@ associated synthetic infection counts generated using five inter-county correlat
 MSE, SNR and Jaccard index are used for comparison are described in 
 [include/comparison_tools](<include/comparison_tools/>).
 
-Note : all the display functions are to be found in [display/](<display>).
+- ---
+Notes: 
+* all the display functions are to be found in [display/](<display>).
+* previous version is available in [archives/](<archives/Covid-R-estim-GRETSI23.zip>) in `.zip` format.
 
 # References 
 [1] A. Cori, N. Ferguson, C. Fraser, and S. Cauchemez, “A new framework and software to estimate time-varying 
