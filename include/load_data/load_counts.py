@@ -63,7 +63,7 @@ def loadingData_JHU(country):
     Available between January 23th, 2020 and March 9th, 2023.
     :param country : name of the chosen country in str format
     Loading data from Johns Hopkins University (JHU) website containing worldwide daily new infections.
-    ( See https://coronavirus.jhu.edu/map.html for more details)
+    (See https://coronavirus.jhu.edu/map.html for more details)
     Processing only data from 'country'.
     :return: timestamps: ndarray of str format 'year-month-day' (dates)
              confirmed : ndarray of integers (daily new infections)
