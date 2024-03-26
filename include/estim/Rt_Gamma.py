@@ -17,8 +17,9 @@ def Rt_Gamma(data, tau=settings.tauWindow, display=True, options=None):
     :param display : (optional) bool whether displaying execution timle or not
     :return: REstimate : ndarray of shape (days - 1, ), daily estimation of Rt
              OEstimate : ndarray of shape (days - 1, ), daily estimation of Outliers (none here)
-             timestamps : ndarray of shape (days -1, )
-             ZDataProc : ndarray of shape (days - 1, )
+             options: dictionary containing at least:
+             - dates: ndarray of shape (counties, days -1) representing dates
+             - data: ndarray of shape (counties, days - 1) representing processed data
     """
     dates = options['dates']
     # Preprocess : ONLY get rid of negative values

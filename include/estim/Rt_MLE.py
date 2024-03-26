@@ -15,8 +15,9 @@ def Rt_MLE(data, options=None):
             - dates ndarray of shape (days, )
     :return: REstimate : ndarray of shape (days - 1, ), daily estimation of Rt
              OEstimate : ndarray of shape (days - 1, ), daily estimation of Outliers (none here)
-             timestamps : ndarray of shape (days -1, )
-             ZDataProc : ndarray of shape (days - 1, )
+             options: dictionary containing at least:
+             - dates: ndarray of shape (counties, days -1) representing dates
+             - data: ndarray of shape (counties, days - 1) representing processed data
     """
     dates = options['dates']
     # Preprocess : ONLY get rid of negative values
@@ -37,20 +38,3 @@ def Rt_MLE(data, options=None):
                   'data': ZDataProc,
                   'method': 'MLE'}
     return Rt, optionsMLE
-
-# # Choice of country, dates, regularization parameters & computation
-# from display import displayFigures
-# from estim import getData
-# country = 'France'
-# fday = '2021-11-01'
-# lday = '2022-08-03'
-#
-# dataBasis = 'JHU'
-# NameParameters = 'Fast'
-#
-# dates, data = getData.getRealData(country, fday, lday, dataBasis)
-# REstimateMLE, datesCroppedMLE, dataCroppedMLE = Rt_MLE(dates, data)
-#
-# dates = datesCroppedMLE
-#
-# displayFigures.display_MLE(country, dates, REstimateMLE)

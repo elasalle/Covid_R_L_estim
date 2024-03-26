@@ -14,8 +14,9 @@ def Rt_M(data, muR=50, muS=0.005, options=None):
     :param muR: regularization parameter for piecewise linearity of Rt
     :param options: dictionary containing 'dates', 'B_matrix'
     :return: REstimate: ndarray of shape (counties, days - 1), daily estimation of Rt
-             timestamps: ndarray of shape (counties, days -1) representing dates
-             ZDataDep: ndarray of shape (counties, days - 1) representing processed data
+             options: dictionary containing at least:
+             - dates: ndarray of shape (counties, days -1) representing dates
+             - data: ndarray of shape (counties, days - 1) representing processed data
     """
     dates = options['dates']
     B_matrix = options['B_matrix']

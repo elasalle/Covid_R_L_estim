@@ -15,8 +15,9 @@ def Rt_U(data, muR=50, options=None):
             - dates ndarray of shape (days, )
     :param muR: regularization parameter for piecewise linearity of Rt
     :return: REstimate: ndarray of shape (counties, days - 1), daily estimation of Rt
-             datesUpdated: ndarray of shape (counties, days -1) representing dates
-             dataCrop: ndarray of shape (counties, days - 1) representing processed data
+             options: dictionary containing at least:
+             - dates: ndarray of shape (counties, days -1) representing dates
+             - data: ndarray of shape (counties, days - 1) representing processed data
     """
     dates = options['dates']
     if len(np.shape(data)) == 1:

@@ -2,7 +2,7 @@ import time
 from include.optim_tools.Rt_Joint_graph import Rt_Jgraph
 
 
-def Rt_Multivariate(data, lambdaR=3.5, lambdaO=0.02, lambdaS=0.005, options=None):
+def Rt_M_O(data, lambdaR=3.5, lambdaO=0.02, lambdaS=0.005, options=None):
     """
     Computes the evolution of the reproduction number R for the indicated country and between dates 'fday' and 'lday'.
     The method used is detailed in optim_tools/CP_covid_5_outlier_graph.py
@@ -21,15 +21,21 @@ def Rt_Multivariate(data, lambdaR=3.5, lambdaO=0.02, lambdaS=0.005, options=None
     edges of the associated graph. Also corresponds to the transposed incidence matri
     :return: REstimate: ndarray of shape (counties, days - 1), daily estimation of Rt
              OEstimate: ndarray of shape (counties, days - 1), daily estimation of Outliers
-             timestamps: ndarray of shape (counties, days -1) representing dates
-             ZDataDep: ndarray of shape (counties, days - 1) representing processed data
+             options: dictionary containing at least:
+             - dates: ndarray of shape (counties, days -1) representing dates
+             - data: ndarray of shape (counties, days - 1) representing processed data
     """
     dates = options['dates']
     B_matrix = options['B_matrix']
     print("Computing Univariate estimator with misreported counts modelisation ...")
     start_time = time.time()
-    REstimate, datesUpdated, ZDataProc = Rt_Jgraph(dates, data, B_matrix, lambdaR, lambdaO, lambdaS)
+    REstimate, OEstimate, datesUpdated, ZDataDep = Rt_Jgraph(dates, data, B_matrix, lambdaR, lambdaO, lambdaS)
     executionTime = time.time() - start_time
     print("Done in %.4f seconds ---" % executionTime)
 
-    return REstimate, datesUpdated, ZDataProc
+    options_MO = {'dates': datesUpdated,
+                  'data': ZDataDep,
+                  'method': 'M-O',
+                  'OEstim': OEstimate}
+
+    return REstimate, OEstimate, options_MO

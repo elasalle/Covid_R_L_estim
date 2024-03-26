@@ -20,8 +20,9 @@ def Rt_U_O(data, lambdaR=3.5, lambdaO=0.02, options=None):
     :param options: dictionary containing at least
             - dates ndarray of shape (days, )
     :return: REstimate: ndarray of shape (counties, days - 1), daily estimation of Rt
-             datesUpdated: ndarray of shape (counties, days -1) representing dates
-             dataCrop: ndarray of shape (counties, days - 1) representing processed data
+             options: dictionary containing at least:
+             - dates: ndarray of shape (counties, days -1) representing dates
+             - data: ndarray of shape (counties, days - 1) representing processed data
     """
     dates = options['dates']
     if len(np.shape(data)) == 1:
