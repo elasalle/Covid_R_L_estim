@@ -3,6 +3,7 @@
 **Covid-R-estim** is a web repository implementing various state-of-the-art instantaneous reproduction number R(t) 
 estimators, applied to Covid-19. Synthetic realistic univariate and multivariate infection counts generation as well as
 tools for estimators quantitative comparison are available.
+
 - ---
 
 **Authors**: [Juliana Du](<https://juliana-du.github.io/>) (1), Barbara Pascal (2), Patrice Abry (1)
@@ -24,7 +25,8 @@ estimators comparison </font>
 - ---
 # Estimation of multivariate reproduction number 
 
-The estimation codes are associated to [1], [2], [3] that present multivariate reproduction number R estimators. 
+The estimation codes are associated to [1], [2], [3] that present multivariate reproduction number R estimators, 
+following existing MATLAB code to be found [here](<https://github.com/bpascal-fr/Covid-Estim-R>). 
 
 [demo_estimRealData.ipynb](demo_estimRealData.ipynb) is a Jupyter notebook that computes univariate estimations of the 
 instantaneous reproduction number given daily new infection counts to be found on [Johns Hopkins University](<https://coronavirus.jhu.edu/map.html>) `JHU` 
@@ -49,8 +51,8 @@ modelisation](<include/estim/Rt_UnivariateOutliers.py>) [3]
 Code for these methods are to be found in subdirectory [include/estim/](<include/estim>).
 
 `U`,`M` and `U-O` are variational estimators formulated as a minimization problems solved using Chambolle-Pock [4]
-primal dual algorithm, customized to the objective functions involved. See implementation in 
-[include/optim_tools/]((<include/optim_tools>)). 
+primal dual algorithm, customized to the objective functions involved. See implementation (translation from 
+[MATLAB code](<https://github.com/bpascal-fr/Covid-Estim-R>)) in [include/optim_tools/](<include/optim_tools>). 
 
 
 # NEW: Multivariate synthetic infection counts generation
@@ -91,7 +93,7 @@ associated synthetic infection counts generated using five inter-county correlat
 
 (example links to one connectivity structure by default).
 
-# Comparison between R estimators on synthetic infection counts
+# Comparison of R estimators on synthetic infection counts
 
 [demo_compareEstimSynthData.ipynb](demo_compareEstimSynthData.ipynb) is a Jupyter notebook that displays:
 * the comparison of the univariate methods presented earlier on generated univariate synthetic infection counts
