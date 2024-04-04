@@ -19,8 +19,7 @@ CNRS 80PRIME-2021 «CoMoDécartes» project
 **Created in**: June 2023, <b><i> updated in March 2024 </b> </i>
 
 - ---
-<font size="+3"> <b> NEW </b></font><font size="+2">(March 2024): Multivariate synthetic infection counts generation and
-estimators comparison </font>
+### <font size="+3"> <b> NEW </b></font>(March 2024): Multivariate synthetic infection counts generation and estimators comparison
 
 - ---
 # Estimation of multivariate reproduction number 
