@@ -52,11 +52,15 @@ def buildData_anyRO(R, Outliers, firstCases, firstDay='2020-01-23', threshold=se
             ZDataBuilt: ndarray of shape (days, ) built following Cori's epidemiological model
     """
     days = len(R)  # should be one day less than the original data it was computed from
-    assert (days > 26)
-    assert(days == len(Outliers))
+    assert (days == len(Outliers))
 
     Phi = phi.buildPhi()
 
+    if days <= len(Phi) - 1:
+        DataSizeErr = ValueError("Number of samples (days) for ground truth R too small. Should be greater than %d"
+                                 % (len(Phi) - 1))
+        raise DataSizeErr
+    
     # Initialization with known values for the first day only
     ZData = np.zeros(days + 1)
     ZData[0] = firstCases
