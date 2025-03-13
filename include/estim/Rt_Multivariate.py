@@ -36,9 +36,10 @@ def Rt_M(data, muR=50, muS=0.005, options=None, Gregularization="L1"):
                      'counties': [str(i) for i in range(np.shape(data)[0])]}
     return REstimate, options_M
 
-def Rt_with_laplacianReg(data, L, muR=50, muS=0.005, Gregularization="L2", dates=None):
+def Rt_with_laplacianReg(data, L, muR=50, muS=0.005, Gregularization="L2", dates=None, verbose=False):
 
-    print("Computing a Cholesky decomposition of L ...")
+    if verbose:
+        print("Computing a Cholesky decomposition of L ...")
     ti = time.time()
     try:
         S = np.linalg.cholesky(L + (1e-12)*np.eye(L.shape[0]))
@@ -47,7 +48,8 @@ def Rt_with_laplacianReg(data, L, muR=50, muS=0.005, Gregularization="L2", dates
         print("minimal eignvalue of L was {}".format(minegval))
         S = np.linalg.cholesky(L - (1.01*minegval)*np.eye(L.shape[0]))
     tf = time.time()
-    print("Done in {:4.3f} seconds ---".format(tf-ti))
+    if verbose:
+        print("Done in {:4.3f} seconds ---".format(tf-ti))
 
     print("Computing Multivariate estimator ...")
     start_time = time.time()

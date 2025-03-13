@@ -40,7 +40,7 @@ def get_operators_for_vectorization(n):
 
 
 
-def learningL(lambda_G, lambda_L, R):
+def learningL(lambda_G, lambda_L, R, verbose=False):
     """This function solve the otpimization problem to learn the Laplacian matrix describing spatial relationship from spatio-temporal signal. It solves:
     Argmin_L lambda_G sum_t R_t^T L R_t + lambda_L ||L||_Fro^2 ; subject to Tr(L)=n (L is an nxn matrix), L_ij = L_ji <= 0, and L.1 = 0.
     The optimization problem is cast as a Quadratic Programming problem.
@@ -68,12 +68,14 @@ def learningL(lambda_G, lambda_L, R):
     b[0,0] = n
     P,q,G,h,A,b = matrix(P), matrix(q), matrix(G), matrix(h), matrix(A), matrix(b)
     tf = time()
-    print("Precomputations done in {:5.3f}".format(tf-ti))
+    if verbose:
+        print("Precomputations done in {:5.3f}".format(tf-ti))
 
     ti = time()
     halfvectL = np.array(qp(P,q,G,h,A,b)['x'])
     tf = time()
-    print("QP solution computed in {}".format(tf-ti))
+    if verbose:
+        print("QP solution computed in {}".format(tf-ti))
     L = np.zeros((n,n))
     L[np.triu_indices(n)] = halfvectL[:,0]
     L += L.T

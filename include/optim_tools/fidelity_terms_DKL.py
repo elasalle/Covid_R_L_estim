@@ -70,9 +70,7 @@ def prox_DKL_no_outlier(x, data, alpha, gamma):
 
     """
     x = x.astype('float64')
-    intermediate = np.abs(x - gamma * alpha) ** 2 + 4 * gamma * data
-    sqrt = np.sqrt(intermediate)
-    prox = (x - gamma * alpha + sqrt) / 2
+    prox = (x - gamma * alpha + np.sqrt(np.abs(x - gamma * alpha) ** 2 + 4 * gamma * data)) / 2
 
     prox[(alpha == 0) * (data == 0)] = 0
     return prox

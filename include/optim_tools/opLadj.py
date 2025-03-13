@@ -41,9 +41,9 @@ def opLadj(y, param=struct(), filter_def="laplacian", computation="direct"):
             else:
                 xbeg = np.array([0.25 * y[0, 0], -0.5 * y[0, 0] + 0.25 * y[0, 1]])
                 xend = np.array([0.25 * y[0, - 3] - 0.5 * y[0, - 2], 0.25 * y[0, - 2]])
-                x = np.dot(np.diag(param.lambd), np.concatenate((xbeg,
+                x = param.lambd[:,None] * np.concatenate((xbeg,
                                                                  0.25 * y[0, 2:- 2] - 0.5 * y[0, 1:- 3] + 0.25 * y[0, :- 4],
-                                                                 xend)))
+                                                                 xend))
     else:
         raise OptionError
     return x
