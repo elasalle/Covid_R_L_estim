@@ -1,6 +1,7 @@
 import numpy as np
-from include.optim_tools import opL, conversion_pymat as mat2py, Chambolle_pock_pdm as cppdm, prox_L1 as l1, opLadj, \
+from include.optim_tools import opL, conversion_pymat as mat2py, Chambolle_pock_pdm as cppdm, opLadj, \
     fidelity_terms_DKL as dkl
+from include.optim_tools import prox_L1 as l1, prox_L2 as l2
 
 
 def set_choice(choice):
@@ -87,6 +88,16 @@ def CP_covid_4_graph(data, muR, muS, alpha, B_matrix, choice):
     if choice.regularization == "L1":
         prox.regularization = lambda y_, tau: np.array([l1.prox_L1(y_[0], tau), l1.prox_L1(y_[1], tau)], dtype=object)
         objective.regularization = lambda y_, tau: tau * np.sum(np.abs(np.concatenate((y_[0], y_[1]))))
+    elif choice.regularization == "L2":
+        print("use prox L2")
+        prox.regularization = lambda y_, tau: np.array([l1.prox_L1(y_[0], tau), l2.prox_L2(y_[1], tau)], dtype=object)
+        objective.regularization = lambda y_, tau: tau * (np.sum(np.abs(y_[0])) + np.sum(np.square(y_[1])) )
+        
+
+    # to make a L2squared spatial regularization, we need to adapt the y_[1] termes. 
+    # l1.prox_L1(y_[1], tau) must be adapted to an L_2^2 prox 
+    # np.sum(np.abs(np.concatenate((y_[0], y_[1])))) needs to become np.sum(np.abs(y_[0])) + np.sum(np.square(y_[1]))
+    # also, below we might need/want to replace the incident matrix B_matrix by some square root of the graph Laplacian matrix
 
     paramL = mat2py.struct()
     paramL.lambd = muR
@@ -95,8 +106,7 @@ def CP_covid_4_graph(data, muR, muS, alpha, B_matrix, choice):
 
     op = mat2py.struct()
 
-    def direct_covid_4_graph(estimates):
-        R = estimates
+    def direct_covid_4_graph(R):
         return np.array([opL.opL(R, paramL), muS * np.dot(B_matrix, R)], dtype=object)
 
     op.direct = direct_covid_4_graph
