@@ -40,7 +40,7 @@ def firstCasesCorrection(data, REstim, OEstim):
     return firstCases, REstim[:, 1:], OEstim[:, 1:]
 
 
-def buildData_anyRO(R, Outliers, firstCases, firstDay='2020-01-23', threshold=settings.thresholdPoisson):
+def buildData_anyRO(R, Outliers, firstCases, firstDay='2020-01-23', threshold=settings.thresholdPoisson, alpha=1.):
     """
     Build data Z drawn from Poisson distribution with mean (R * Phi Z + Out) with the given firstCases (1 day)
     :param R: ndarray of shape (days,)
@@ -48,6 +48,7 @@ def buildData_anyRO(R, Outliers, firstCases, firstDay='2020-01-23', threshold=se
     :param Outliers: ndarray of shape (days, )
     :param firstDay: (optional) str in format 'YYYY-MM-DD' to indicate first day of random dates drawn
     :param threshold: (optional) inferior limit for Poisson parameter : float
+    :param alpha: (optional) float, coefficient to modify the variance of poisson variables by sampling according to alpha*P(mean/alpha) instead of P(mean). 
     :return datesBuilt: list of str in format 'YYYY-MM-DD' random dates associated with ZDataBuilt
             ZDataBuilt: ndarray of shape (days, ) built following Cori's epidemiological model
     """
@@ -77,13 +78,13 @@ def buildData_anyRO(R, Outliers, firstCases, firstDay='2020-01-23', threshold=se
         PhiNormalizedIterK = Phi[1:k + 1] / np.sum(Phi[1:k + 1])  # careful to use non-normalized Phi here !!
         fZ = np.flip(ZData[:k])  # 1st value of Phi is always 0 : we do not need data on day 0
         realR[k] = R[k-1] * np.sum(fZ * PhiNormalizedIterK)  # R is already cropped of day 1
-        ZData[k] = np.random.poisson(max(realR[k] + OutliersRescaled[k-1], threshold))   # Outliers are cropped of day 1
+        ZData[k] = np.random.poisson(max((realR[k] + OutliersRescaled[k-1])/alpha, threshold))*alpha   # Outliers are cropped of day 1
 
     PhiNormalized = Phi / np.sum(Phi)
     for k in range(tauPhi, days + 1):
         fZ = np.flip(ZData[k - len(Phi) + 1:k])
         realR[k] = R[k-1] * np.sum(fZ * PhiNormalized[1:])  # 1st value of Phi is always 0 : we don't need data on day 0
-        ZData[k] = np.random.poisson(max(realR[k] + OutliersRescaled[k-1], threshold))
+        ZData[k] = np.random.poisson(max((realR[k] + OutliersRescaled[k-1])/alpha, threshold))*alpha
 
     options = {'dates': randomDates(firstDay, len(ZData[1:])),
                'data': ZData[1:]}  # cropped from the initialization with 'real' firstCases

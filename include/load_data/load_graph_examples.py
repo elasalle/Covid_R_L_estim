@@ -59,7 +59,14 @@ def connectStruct_choice(example):
                             [-1, -1,  1, -1,  0],
                             [ 0, -1, -1,  1, -1],
                             [-1, -1,  0, -1,  1]])
-
+    elif example == '2-3': 
+        #added by E. Lasalle
+        # disconnected graph with a 2-clique and a 3-clique
+        strucMat = np.array([[ 1, -1,  0,  0,  0],
+                            [ -1,  1,  0,  0,  0],
+                            [  0,  0,  1, -1, -1],
+                            [  0,  0, -1,  1, -1],
+                            [  0,  0, -1, -1,  1]])
     else:
         ExampleError = ValueError("See data/Synthetic/Multivariate/load_graph_examples.py for available examples.")
         raise ExampleError
@@ -113,6 +120,12 @@ def connectStruct_choice(example):
         pos[depsIndexes[2]] = (2, 0.5)
         pos[depsIndexes[3]] = (2, -0.5)
         pos[depsIndexes[4]] = (0, -0.5)
+    elif example == '2-3': 
+        pos[depsIndexes[0]] = (0  ,  0.5)
+        pos[depsIndexes[1]] = (0  , -0.5)
+        pos[depsIndexes[2]] = (1  ,  0.5)
+        pos[depsIndexes[3]] = (1  , -0.5)
+        pos[depsIndexes[4]] = (1.7,  0)
     else:
         ExampleError = ValueError("See data/Synthetic/Multivariate/load_graph_examples.py for available examples.")
         raise ExampleError
