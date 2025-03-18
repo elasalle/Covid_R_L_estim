@@ -45,7 +45,8 @@ def buildZPhi(timestamps, ZData, Phi):
         ZPhiNormalized[T] = np.sum(fZ * PhiNormalizedIterT)
 
     # Crop ZPhi and ZData : first day of computing R is irrelevant since we only have one sample.
-    timestamps = timestamps[1:]
+    if timestamps is not None:
+        timestamps = timestamps[1:]
     ZPhiNormalized = ZPhiNormalized[1:]
     ZDataCropped = ZData[1:]
     return timestamps, ZDataCropped, ZPhiNormalized
