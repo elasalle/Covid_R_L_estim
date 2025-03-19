@@ -90,7 +90,8 @@ def CP_covid_4_graph(data, muR, muS, alpha, B_matrix, choice):
         objective.regularization = lambda y_, tau: tau * (np.sum(np.abs(y_[0])) + np.sum(np.abs(y_[1])))
     elif choice.regularization == "L2":
         prox.regularization = lambda y_, tau: np.array([l1.prox_L1(y_[0], tau), l2.prox_L2(y_[1], tau)], dtype=object)
-        objective.regularization = lambda y_, tau: tau * (np.sum(np.abs(y_[0])) + np.sum(np.square(y_[1])) )
+        objective.regularization = lambda y_, tau: tau * (np.sum(np.abs(y_[0])) + 1/2*np.sum(np.square(y_[1])) )
+        muS = np.sqrt(2*muS)
         
 
     # to make a L2squared spatial regularization, we need to adapt the y_[1] termes. 

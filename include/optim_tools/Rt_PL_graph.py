@@ -7,7 +7,7 @@ from include.optim_tools import crafting_phi
 from include.optim_tools import CP_covid_4_graph as cp4g
 
 
-def Rt_PL_graph(dates, data, B_matrix, muR=50, muS=0.005, Gregularization="L1"):
+def Rt_PL_graph(dates, data, B_matrix, muR=50, muS=0.005, Gregularization="L1", return_crit = False):
     """
     Computes the evolution of the reproduction number R for counties on a graph.
     The method used is detailed in optim_tools/CP_covid_4_graph.py (regularized optimization scheme solved using
@@ -60,5 +60,8 @@ def Rt_PL_graph(dates, data, B_matrix, muR=50, muS=0.005, Gregularization="L1"):
     
     REstimate, crit, gap, op_out = cp4g.CP_covid_4_graph(ZDataNorm, muR, muS, ZPhiNorm, B_matrix, choice)
 
-    return REstimate, datesUpdated, ZDataDep
+    if return_crit:
+        return REstimate, datesUpdated, ZDataDep, crit
+    else:
+        return REstimate, datesUpdated, ZDataDep
 
