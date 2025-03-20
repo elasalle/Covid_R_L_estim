@@ -49,15 +49,7 @@ def obj_function(R, L, ZDataNorm, ZPhiNorm, lambda_pwlin, lambda_GR, lambda_Fro)
 
     return crit, crit_L, crit_R
 
-
-def Rt_L(Z, max_iter,lambda_pwlin, lambda_GR, lambda_Fro, options, init_method="U", init_param=None, save_objective=False):
-
-    ndep = Z.shape[0]
-    
-    #handle param
-    Gregularization="L2"
-    dates = options["dates"]
-
+def make_lambda_GR_as_list(max_iter, lambda_GR):
     #make sure that lambda_GR is a list of size max_iter
     if isinstance(lambda_GR, list):
         if len(lambda_GR)<max_iter:
@@ -68,19 +60,9 @@ def Rt_L(Z, max_iter,lambda_pwlin, lambda_GR, lambda_Fro, options, init_method="
         lambda_GR = [lambda_GR]*max_iter # create a constant list
     else:
         ValueError("lambda_GR should be a list, an int or a float, received {}.".format(type(lambda_GR)))
+    return lambda_GR
 
-    #initialize variables        
-    Restims = []
-    Lestims = []
-
-    if save_objective:
-        ZDataNorm, ZPhiNorm = get_normalized_Zphi_and_Z(Z) # we compute once here. it will be usefull to compute the objective function at each iteration
-    objs = []
-    crits_R, crits_L = [], []
-    crits_R_true, crits_L_true = [], []
-
-
-    # initialize
+def initialize_alternate_optim(Z, ndep, options, init_method="U", init_param=None):
     if init_method=="U":
         if init_param is None:
             init_param = {"options":options, "lambdaU_pwlin":50}
@@ -96,7 +78,33 @@ def Rt_L(Z, max_iter,lambda_pwlin, lambda_GR, lambda_Fro, options, init_method="
     elif init_method=="UO":
         if init_param is None:
             init_param = {"options":options, "lambdaU_pwlin":3.5, "lambdaU_O":0.02}
-        R = Rt_U_O(Z, init_param["lambdaU_pwlin"], init_param["lambdaU_O"], init_param["options"])
+        R, _, _ = Rt_U_O(Z, init_param["lambdaU_pwlin"], init_param["lambdaU_O"], init_param["options"])
+    return R
+
+
+def Rt_L(Z, max_iter,lambda_pwlin, lambda_GR, lambda_Fro, options, init_method="U", init_param=None, save_objective=False):
+
+    ndep = Z.shape[0]
+    
+    #handle param
+    Gregularization="L2"
+    dates = options["dates"]
+
+    lambda_GR = make_lambda_GR_as_list(max_iter, lambda_GR)
+    
+    #initialize variables        
+    Restims = []
+    Lestims = []
+
+    if save_objective:
+        ZDataNorm, ZPhiNorm = get_normalized_Zphi_and_Z(Z) # we compute once here. it will be usefull to compute the objective function at each iteration
+    objs = []
+    crits_R, crits_L = [], []
+    crits_R_true, crits_L_true = [], []
+
+
+    # initialize
+    R = initialize_alternate_optim(Z, init_method, init_param)
     Restims.append(R)
 
     L = - np.ones((ndep, ndep)) / (ndep-1)
