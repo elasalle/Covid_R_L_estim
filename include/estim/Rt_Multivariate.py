@@ -36,7 +36,7 @@ def Rt_M(data, muR=50, muS=0.005, options=None, Gregularization="L1"):
                      'counties': [str(i) for i in range(np.shape(data)[0])]}
     return REstimate, options_M
 
-def Rt_with_laplacianReg(data, L, muR=50, muS=0.005, Gregularization="L2", dates=None, verbose=False, return_crit=False):
+def Rt_with_laplacianReg(data, L, muR=50, muS=0.005, Gregularization="L2", dates=None, verbose=False, return_crit=False, Rinit = None):
 
     if verbose:
         print("Computing a Cholesky decomposition of L ...")
@@ -53,7 +53,7 @@ def Rt_with_laplacianReg(data, L, muR=50, muS=0.005, Gregularization="L2", dates
 
     
     start_time = time.time()
-    REstimate, datesUpdated, ZDataProc, crits = Rt_PL_graph(dates, data, S.T, muR, muS, Gregularization, return_crit=True)
+    REstimate, datesUpdated, ZDataProc, crits = Rt_PL_graph(dates, data, S.T, muR, muS, Gregularization, return_crit=True, Rinit=Rinit)
     executionTime = time.time() - start_time
     if verbose:
         print("Multivariate estimator computed in %.4f seconds ---" % executionTime)
