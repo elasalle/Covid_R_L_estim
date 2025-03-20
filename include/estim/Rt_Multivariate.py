@@ -51,11 +51,12 @@ def Rt_with_laplacianReg(data, L, muR=50, muS=0.005, Gregularization="L2", dates
     if verbose:
         print("Done in {:4.3f} seconds ---".format(tf-ti))
 
-    print("Computing Multivariate estimator ...")
+    
     start_time = time.time()
     REstimate, datesUpdated, ZDataProc, crits = Rt_PL_graph(dates, data, S.T, muR, muS, Gregularization, return_crit=True)
     executionTime = time.time() - start_time
-    print("Done in %.4f seconds ---" % executionTime)
+    if verbose:
+        print("Multivariate estimator computed in %.4f seconds ---" % executionTime)
     if return_crit:
         return REstimate, crits[-1]
     else:
